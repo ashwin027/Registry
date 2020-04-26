@@ -12,11 +12,13 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Reviews.Models;
 using Reviews.Repository;
+using static ProductCatalog.Grpc.Product;
 
 namespace Reviews.Api
 {
     public class Startup
     {
+        private const string productEndPointkey = "ProductEndpoint";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -28,7 +30,15 @@ namespace Reviews.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ReviewContext>();
-            services.Configure<Config>(Configuration.GetSection("Config"));
+
+            var configSection = Configuration.GetSection(nameof(Config));
+            var config = configSection.Get<Config>();
+            services.Configure<Config>(configSection);
+
+            services.AddGrpcClient<ProductClient>(o =>
+            {
+                o.Address = new Uri(config.ProductEndpoint);
+            });
 
             services.AddScoped<IReviewRepository, ReviewRepository>();
 
@@ -43,7 +53,7 @@ namespace Reviews.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             app.UseRouting();
 

@@ -6,19 +6,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static ProductCatalog.Grpc.Product;
+using ProductCatalog.Grpc;
 
 namespace Reviews.Api.Controllers
 {
     [ApiController]
-    [Route("/api/[controller]")]
+    [Route("api/[controller]")]
     public class ReviewController: ControllerBase
     {
         private readonly ILogger<ReviewController> _logger;
         private readonly IReviewRepository _repository;
-        public ReviewController(ILogger<ReviewController> logger, IReviewRepository reviewRepository)
+        private readonly ProductClient _productClient;
+        public ReviewController(ILogger<ReviewController> logger, IReviewRepository reviewRepository, ProductClient productClient)
         {
             _logger = logger;
             _repository = reviewRepository;
+            _productClient = productClient;
         }
 
         [HttpGet("{id}")]
@@ -68,7 +72,6 @@ namespace Reviews.Api.Controllers
             }
         }
 
-        // TODO: Add validation to make sure the product exists.
         [HttpPost]
         public async Task<ActionResult<Review>> CreateReview(Review review)
         {
@@ -77,7 +80,14 @@ namespace Reviews.Api.Controllers
                 if (review == null)
                 {
                     _logger.LogError("Bad request in ReviewController, method: CreateReview(). Request is null.");
-                    return BadRequest();
+                    return BadRequest("Request is null");
+                }
+
+                var product = _productClient.GetProduct(new ProductRequest() { ProductId = review.ProductId });
+                if (product == null)
+                {
+                    _logger.LogError($"Bad request in ReviewController, method: CreateReview(). Product with id {review.ProductId} does not exist.");
+                    return BadRequest($"Product with id {review.ProductId} does not exist.");
                 }
 
                 var result = await _repository.CreateReview(review);
@@ -106,6 +116,13 @@ namespace Reviews.Api.Controllers
                 {
                     _logger.LogError("Bad request in ReviewController, method: UpdateReview(). Request is null.");
                     return BadRequest();
+                }
+
+                var product = _productClient.GetProduct(new ProductRequest() { ProductId = review.ProductId });
+                if (product == null)
+                {
+                    _logger.LogError($"Bad request in ReviewController, method: UpdateReview(). Product with id {review.ProductId} does not exist.");
+                    return BadRequest($"Product with id {review.ProductId} does not exist.");
                 }
 
                 var existingReview = await _repository.GetReview(review.Id);
@@ -149,11 +166,17 @@ namespace Reviews.Api.Controllers
         }
 
         // TODO add pagination
-        [HttpGet("api/reviews/product/{productId}")]
+        [HttpGet("/api/reviews/product/{productId}")]
         public async Task<ActionResult<List<Review>>> GetReviewsByProductId(int productId)
         {
             try
             {
+                var product = _productClient.GetProduct(new ProductRequest() { ProductId = productId });
+                if (product == null)
+                {
+                    _logger.LogError($"Bad request in ReviewController, method: GetReviewsByProductId(). Product with id {productId} does not exist.");
+                    return BadRequest($"Product with id {productId} does not exist.");
+                }
                 var reviews = await _repository.GetReviewsByProductId(productId);
 
                 if (reviews == null)
@@ -177,6 +200,13 @@ namespace Reviews.Api.Controllers
         {
             try
             {
+                var product = _productClient.GetProduct(new ProductRequest() { ProductId = productId });
+                if (product == null)
+                {
+                    _logger.LogError($"Bad request in ReviewController, method: DeleteReviewsForProduct(). Product with id {productId} does not exist.");
+                    return BadRequest($"Product with id {productId} does not exist.");
+                }
+
                 await _repository.DeleteReviewsForProduct(productId);
 
                 return Ok();

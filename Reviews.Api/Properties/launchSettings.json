@@ -9,19 +9,19 @@
     }
   },
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "launchUrl": "api/reviews",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
     "Reviews.Api": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "api/reviews",
-      "applicationUrl": "https://localhost:6010;http://localhost:6011",
+      "applicationUrl": "http://localhost:6010;https://localhost:6011",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "api/reviews",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

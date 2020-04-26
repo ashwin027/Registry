@@ -28,7 +28,7 @@ namespace ProductCatalog.Grpc
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ProductContext>();
-            services.Configure<Config>(Configuration.GetSection("Config"));
+            services.Configure<Config>(Configuration.GetSection(nameof(Config)));
 
             // Register repositories
             services.AddScoped<IProductRepository, ProductRepository>();

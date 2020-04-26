@@ -5,7 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Protobuf Include="Protos\greet.proto" GrpcServices="Server" />
+    <None Remove="Protos\review.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="..\ProductCatalog.Grpc\Protos\product.proto" GrpcServices="Client">
+      <Link>Protos\product.proto</Link>
+    </Protobuf>
+    <Protobuf Include="Protos\review.proto" GrpcServices="Server" />
   </ItemGroup>
 
   <ItemGroup>

@@ -8,8 +8,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Reviews.Grpc.Services;
 using Reviews.Models;
 using Reviews.Repository;
+using static ProductCatalog.Grpc.Product;
 
 namespace Reviews.Grpc
 {
@@ -27,7 +29,16 @@ namespace Reviews.Grpc
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ReviewContext>();
-            services.Configure<Config>(Configuration.GetSection("Config"));
+
+            var configSection = Configuration.GetSection(nameof(Config));
+            var config = configSection.Get<Config>();
+            services.Configure<Config>(configSection);
+
+            services.AddGrpcClient<ProductClient>(o =>
+            {
+                o.Address = new Uri(config.ProductEndpoint);
+            });
+
 
             services.AddScoped<IReviewRepository, ReviewRepository>();
 
@@ -46,7 +57,7 @@ namespace Reviews.Grpc
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcService<GreeterService>();
+                endpoints.MapGrpcService<ReviewService>();
 
                 endpoints.MapGet("/", async context =>
                 {
