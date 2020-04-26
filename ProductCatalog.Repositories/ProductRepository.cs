@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using ProductCatalog.Common.Models;
 using ProductCatalog.Models;
 using ProductCatalog.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,64 +14,111 @@ namespace ProductCatalog.Repository
 {
     public class ProductRepository: IProductRepository
     {
+        private readonly ILogger<ProductRepository> _logger;
         private readonly ProductContext _productDbContext;
-        public ProductRepository(ProductContext dbContext)
+        public ProductRepository(ProductContext dbContext, ILogger<ProductRepository> logger)
         {
             _productDbContext = dbContext;
-        }
-
-        public async Task<Product> CreateProduct(Product product)
-        {
-            _productDbContext.Products.Add(product);
-            await _productDbContext.SaveChangesAsync();
-
-            return product;
-        }
-
-        public async void DeleteProduct(int id)
-        {
-            var product = await _productDbContext.Products.FindAsync(id);
-            _productDbContext.Products.Remove(product);
-            await _productDbContext.SaveChangesAsync();
-        }
-
-        public async Task<Product> GetProduct(int? id)
-        {
-            if (id == null)
-            {
-                return null;
-            }
-
-            return await _productDbContext.Products.FirstOrDefaultAsync(query => query.Id==id);
+            _logger = logger;
         }
 
         public async Task<List<Product>> GetProducts(int pageNumber, int pageSize)
         {
-            IQueryable<Product> products = from p in _productDbContext.Products
-                                             select p;
+            try
+            {
+                IQueryable<Product> products = from p in _productDbContext.Products
+                                               select p;
 
-            return await PaginatedList<Product>.CreateAsync(products.AsNoTracking(), pageNumber, pageSize);
+                return await PaginatedList<Product>.CreateAsync(products.AsNoTracking(), pageNumber, pageSize);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Server Error in GetProducts().", ex);
+                throw ex;
+            }
         }
 
+        public async Task<Product> GetProduct(int? id)
+        {
+            try
+            {
+                if (id == null)
+                {
+                    return null;
+                }
+
+                return await _productDbContext.Products.FirstOrDefaultAsync(query => query.Id == id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Server Error in GetProduct().", ex);
+                throw ex;
+            }
+        }
+
+        public async Task<Product> CreateProduct(Product product)
+        {
+            try
+            {
+                _productDbContext.Products.Add(product);
+                await _productDbContext.SaveChangesAsync();
+
+                return product;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Server Error in CreateProduct().", ex);
+                throw ex;
+            }
+        }
         public async Task<Product> UpdateProduct(Product product)
         {
-            if (product?.Id==null)
+            try
             {
-                return null;
-            }
+                if (product?.Id == null)
+                {
+                    return null;
+                }
 
-            var existingProduct = await _productDbContext.Products.FindAsync(product.Id);
-            if (existingProduct == null)
+                var existingProduct = await _productDbContext.Products.FindAsync(product.Id);
+                if (existingProduct == null)
+                {
+                    return null;
+                }
+
+                existingProduct.Id = product.Id;
+                existingProduct.Name = product.Name;
+                existingProduct.Description = product.Description;
+                await _productDbContext.SaveChangesAsync();
+
+                return existingProduct;
+            }
+            catch (Exception ex)
             {
-                return null;
+                _logger.LogError("Server Error in UpdateProduct().", ex);
+                throw ex;
             }
+        }
 
-            existingProduct.Id = product.Id;
-            existingProduct.Name = product.Name;
-            existingProduct.Description = product.Description;
-            await _productDbContext.SaveChangesAsync();
+        public async Task<bool> DeleteProduct(int? id)
+        {
+            try
+            {
+                if (id == null)
+                {
+                    return false;
+                }
+                var product = await _productDbContext.Products.FindAsync(id);
+                _productDbContext.Products.Remove(product);
+                await _productDbContext.SaveChangesAsync();
 
-            return existingProduct;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Server Error in DeleteProduct().", ex);
+                throw ex;
+            }
         }
     }
 }

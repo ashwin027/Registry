@@ -12,6 +12,6 @@ namespace ProductCatalog.Repository
         Task<Product> GetProduct(int? id);
         Task<Product> CreateProduct(Product product);
         Task<Product> UpdateProduct(Product product);
-        void DeleteProduct(int id);
+        Task<bool> DeleteProduct(int? id);
     }
 }
