@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using ProductCatalog.Common.Models;
 using ProductCatalog.Models;
 using ProductCatalog.Models.Entities;
@@ -13,22 +14,14 @@ namespace ProductCatalog.Repository
     {
         private readonly string _connectionString;
         public DbSet<Product> Products { get; set; }
-        public ProductContext(Config config, DbContextOptions<ProductContext> options) : base(options)
+        public ProductContext(IOptionsMonitor<Config> configAccessor, DbContextOptions<ProductContext> options) : base(options)
         {
-            _connectionString = config.ConnectionString;
+            _connectionString = configAccessor.CurrentValue.ConnectionString;
         }
-
-        public ProductContext(DbContextOptions<ProductContext> options) : base(options)
-        {
-        }
-
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // optionsBuilder.UseSqlServer(_connectionString);
-            optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ProductCatalog;Trusted_Connection=True;");
+            optionsBuilder.UseSqlServer(_connectionString);
         }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
