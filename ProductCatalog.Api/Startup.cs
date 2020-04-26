@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ProductCatalog.Common.Models;
 using ProductCatalog.Repository;
 
 namespace ProductCatalog.Api
@@ -25,6 +26,9 @@ namespace ProductCatalog.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<ProductContext>();
+            services.Configure<Config>(Configuration.GetSection("Config"));
+
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddControllers();
         }

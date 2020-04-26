@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace ProductCatalog.Api.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
+    [ApiController()]
+    [Route("api/[controller]")]
     public class ProductController: ControllerBase
     {
         private readonly ILogger<ProductController> _logger;
@@ -22,8 +22,8 @@ namespace ProductCatalog.Api.Controllers
             _repository = productRepository;
         }
 
-        [HttpGet]
-        public ActionResult<Product> GetProduct(int? id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Product>> GetProduct(int? id)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace ProductCatalog.Api.Controllers
                     _logger.LogError("Bad request in ProductController, method: GetProduct(). Request is null.");
                     return BadRequest();
                 }
-                var product = _repository.GetProduct(id);
+                var product = await _repository.GetProduct(id);
 
                 if (product == null)
                 {
@@ -50,7 +50,7 @@ namespace ProductCatalog.Api.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("/api/products")]
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
             try
@@ -136,18 +136,18 @@ namespace ProductCatalog.Api.Controllers
             }
         }
 
-        [HttpDelete]
-        public async Task<ActionResult> DeleteProduct(Product product)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteProduct(int? id)
         {
             try
             {
-                if (product == null)
+                if (id == null)
                 {
-                    _logger.LogError("Bad request in ProductController, method: DeleteProduct(). Request is null.");
+                    _logger.LogError("Bad request in ProductController, method: DeleteProduct(). Id is null.");
                     return BadRequest();
                 }
 
-                var result  = await _repository.DeleteProduct(product.Id);
+                var result  = await _repository.DeleteProduct(id);
 
                 if (!result)
                 {

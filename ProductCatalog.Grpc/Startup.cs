@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProductCatalog.Common.Models;
+using ProductCatalog.Grpc.Services;
 using ProductCatalog.Models;
 using ProductCatalog.Repository;
 
@@ -48,6 +49,7 @@ namespace ProductCatalog.Grpc
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGrpcService<GreeterService>();
+                endpoints.MapGrpcService<ProductService>();
 
                 endpoints.MapGet("/", async context =>
                 {

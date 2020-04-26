@@ -18,6 +18,7 @@ namespace ProductCatalog.Grpc.Services
         {
             _repository = repository;
             _logger = logger;
+            _logger.LogInformation("Product service initialized.");
         }
         public override async Task<ProductResponse> GetProduct(ProductRequest request, ServerCallContext context)
         {
