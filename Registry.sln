@@ -13,17 +13,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Reviews", "Reviews", "{F3B1
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reviews.Repository", "Reviews.Repository\Reviews.Repository.csproj", "{2968E8F8-22E2-4D20-BCC1-61FA3613DB08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reviews.Api", "Reviews.Api\Reviews.Api.csproj", "{AFFD6CC1-2593-482B-B7F2-96E444993213}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reviews.Api", "Reviews.Api\Reviews.Api.csproj", "{AFFD6CC1-2593-482B-B7F2-96E444993213}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Products.Api", "Products.Api\Products.Api.csproj", "{FFA6F644-4476-424F-BA3C-2FEE3FFA6A0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.Api", "ProductCatalog.Api\ProductCatalog.Api.csproj", "{FFA6F644-4476-424F-BA3C-2FEE3FFA6A0A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Registry.Aggregator", "Registry.Aggregator\Registry.Aggregator.csproj", "{FAB32127-E10D-4820-B820-7F48DDE75C04}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalog.Models", "ProductCatalog.Models\ProductCatalog.Models.csproj", "{44BE6148-6383-490C-91BD-1AF090EF94F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.Models", "ProductCatalog.Models\ProductCatalog.Models.csproj", "{44BE6148-6383-490C-91BD-1AF090EF94F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reviews.Models", "Reviews.Models\Reviews.Models.csproj", "{DA1258B0-2D08-4AC2-82E2-931C1EB1190E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reviews.Models", "Reviews.Models\Reviews.Models.csproj", "{DA1258B0-2D08-4AC2-82E2-931C1EB1190E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Registry.Models", "Registry.Models\Registry.Models.csproj", "{C130B48F-26B1-41B4-86F6-51064012839A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Registry.Models", "Registry.Models\Registry.Models.csproj", "{C130B48F-26B1-41B4-86F6-51064012839A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductCatalog.Migrations", "ProductCatalog.Migrations\ProductCatalog.Migrations.csproj", "{E693BACE-FC6D-47C2-A538-21A18B6879BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +69,10 @@ Global
 		{C130B48F-26B1-41B4-86F6-51064012839A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C130B48F-26B1-41B4-86F6-51064012839A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C130B48F-26B1-41B4-86F6-51064012839A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E693BACE-FC6D-47C2-A538-21A18B6879BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E693BACE-FC6D-47C2-A538-21A18B6879BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E693BACE-FC6D-47C2-A538-21A18B6879BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E693BACE-FC6D-47C2-A538-21A18B6879BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,6 +84,7 @@ Global
 		{FFA6F644-4476-424F-BA3C-2FEE3FFA6A0A} = {DE43B855-A35E-4AF5-A215-EC46935864A6}
 		{44BE6148-6383-490C-91BD-1AF090EF94F9} = {DE43B855-A35E-4AF5-A215-EC46935864A6}
 		{DA1258B0-2D08-4AC2-82E2-931C1EB1190E} = {F3B190F1-30A5-4C4D-9020-E916B36E1743}
+		{E693BACE-FC6D-47C2-A538-21A18B6879BD} = {DE43B855-A35E-4AF5-A215-EC46935864A6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0ABEC9BB-EE4D-4727-8A31-FB6F824FE5F0}
