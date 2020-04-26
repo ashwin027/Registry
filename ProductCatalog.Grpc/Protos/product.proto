@@ -1,0 +1,30 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+
+option csharp_namespace = "ProductCatalog.Grpc.Protos";
+package product;
+
+message ProductBasic{
+	string name = 2;
+	string description = 3;
+}
+
+message Product{
+	int32 id = 1;
+	string name = 2;
+	string description = 3;
+}
+
+message Products{
+	repeated Product products = 1;
+}
+
+message ProductRequest{
+	int32 productId = 1;
+}
+
+service ProductService {
+	rpc GetProduct (ProductRequest) returns (Product);
+	rpc GetProducts (google.protobuf.Empty) returns (Products);
+	rpc CreateProduct (ProductBasic) return (Product);
+}

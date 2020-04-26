@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProductCatalog.Common.Models;
 using ProductCatalog.Models;
 using ProductCatalog.Models.Entities;
 using System;

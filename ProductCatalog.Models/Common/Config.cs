@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ProductCatalog.Models
+namespace ProductCatalog.Common.Models
 {
     public class Config
     {

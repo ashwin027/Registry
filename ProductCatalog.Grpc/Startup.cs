@@ -8,10 +8,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ProductCatalog.Common.Models;
 using ProductCatalog.Models;
 using ProductCatalog.Repository;
 
-namespace ProductCatalog.Api
+namespace ProductCatalog.Grpc
 {
     public class Startup
     {

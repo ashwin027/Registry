@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reviews.Repository", "Revie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reviews.Api", "Reviews.Api\Reviews.Api.csproj", "{AFFD6CC1-2593-482B-B7F2-96E444993213}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.Api", "ProductCatalog.Api\ProductCatalog.Api.csproj", "{FFA6F644-4476-424F-BA3C-2FEE3FFA6A0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.Grpc", "ProductCatalog.Grpc\ProductCatalog.Grpc.csproj", "{FFA6F644-4476-424F-BA3C-2FEE3FFA6A0A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Registry.Aggregator", "Registry.Aggregator\Registry.Aggregator.csproj", "{FAB32127-E10D-4820-B820-7F48DDE75C04}"
 EndProject
