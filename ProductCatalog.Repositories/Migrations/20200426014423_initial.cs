@@ -2,7 +2,7 @@
 
 namespace ProductCatalog.Repository.Migrations
 {
-    public partial class @new : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -10,14 +10,14 @@ namespace ProductCatalog.Repository.Migrations
                 name: "Products",
                 columns: table => new
                 {
-                    ProductId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductName = table.Column<string>(nullable: true),
-                    ProductDescription = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.ProductId);
+                    table.PrimaryKey("PK_Products", x => x.Id);
                 });
         }
 

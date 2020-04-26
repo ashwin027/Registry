@@ -9,8 +9,8 @@ using ProductCatalog.Repository;
 namespace ProductCatalog.Repository.Migrations
 {
     [DbContext(typeof(ProductContext))]
-    [Migration("20200426013658_new")]
-    partial class @new
+    [Migration("20200426014423_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -22,18 +22,18 @@ namespace ProductCatalog.Repository.Migrations
 
             modelBuilder.Entity("ProductCatalog.Models.Entities.Product", b =>
                 {
-                    b.Property<int>("ProductId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ProductDescription")
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProductName")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ProductId");
+                    b.HasKey("Id");
 
                     b.ToTable("Products");
                 });
