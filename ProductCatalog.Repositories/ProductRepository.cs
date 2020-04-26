@@ -16,6 +16,8 @@ namespace ProductCatalog.Repository
     {
         private readonly ILogger<ProductRepository> _logger;
         private readonly ProductContext _productDbContext;
+        private const int defaultPageIndex = 1;
+        private const int defaultPageSize = 5;
         public ProductRepository(ProductContext dbContext, ILogger<ProductRepository> logger)
         {
             _productDbContext = dbContext;
@@ -29,7 +31,7 @@ namespace ProductCatalog.Repository
                 IQueryable<Product> products = from p in _productDbContext.Products
                                                select p;
 
-                return await PaginatedList<Product>.CreateAsync(products.AsNoTracking(), pageNumber ?? 1, pageSize ?? 5);
+                return await PaginatedList<Product>.CreateAsync(products.AsNoTracking(), pageNumber ?? defaultPageIndex, pageSize ?? defaultPageSize);
             }
             catch (Exception ex)
             {

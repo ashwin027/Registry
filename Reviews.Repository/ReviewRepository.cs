@@ -15,6 +15,8 @@ namespace Reviews.Repository
     {
         private readonly ILogger<ReviewRepository> _logger;
         private readonly ReviewContext _reviewContext;
+        private const int defaultPageIndex = 1;
+        private const int defaultPageSize = 5;
         public ReviewRepository(ReviewContext dbContext, ILogger<ReviewRepository> logger)
         {
             _reviewContext = dbContext;
@@ -51,14 +53,14 @@ namespace Reviews.Repository
             }
         }
 
-        public async Task<List<Review>> GetReviews(int pageNumber, int pageSize)
+        public async Task<List<Review>> GetReviews(int? pageNumber, int? pageSize)
         {
             try
             {
                 IQueryable<Review> reviews = from r in _reviewContext.Reviews
                                                select r;
 
-                return await PaginatedList<Review>.CreateAsync(reviews.AsNoTracking(), pageNumber, pageSize);
+                return await PaginatedList<Review>.CreateAsync(reviews.AsNoTracking(), pageNumber ?? defaultPageIndex, pageSize ?? defaultPageSize);
             }
             catch (Exception ex)
             {
@@ -80,7 +82,7 @@ namespace Reviews.Repository
             }
         }
 
-        public async Task<List<Review>> GetReviewsByProductId(int productId, int pageNumber, int pageSize)
+        public async Task<List<Review>> GetReviewsByProductId(int productId, int? pageNumber, int? pageSize)
         {
             try
             {
@@ -88,7 +90,7 @@ namespace Reviews.Repository
                                              where r.ProductId == productId
                                              select r;
 
-                return await PaginatedList<Review>.CreateAsync(reviews.AsNoTracking(), pageNumber, pageSize);
+                return await PaginatedList<Review>.CreateAsync(reviews.AsNoTracking(), pageNumber ?? defaultPageIndex, pageSize ?? defaultPageSize);
             }
             catch (Exception ex)
             {

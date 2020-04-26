@@ -48,14 +48,12 @@ namespace Reviews.Api.Controllers
             }
         }
 
-
-        // TODO add pagination
         [HttpGet("/api/reviews")]
-        public async Task<ActionResult<List<Review>>> GetReviews()
+        public async Task<ActionResult<List<Review>>> GetReviews(int? pageIndex, int? pageSize)
         {
             try
             {
-                var reviews = await _repository.GetReviews();
+                var reviews = await _repository.GetReviews(pageIndex, pageSize);
 
                 if (reviews == null)
                 {
@@ -167,7 +165,7 @@ namespace Reviews.Api.Controllers
 
         // TODO add pagination
         [HttpGet("/api/reviews/product/{productId}")]
-        public async Task<ActionResult<List<Review>>> GetReviewsByProductId(int productId)
+        public async Task<ActionResult<List<Review>>> GetReviewsByProductId(int productId, int? pageIndex, int? pageSize)
         {
             try
             {
@@ -177,7 +175,7 @@ namespace Reviews.Api.Controllers
                     _logger.LogError($"Bad request in ReviewController, method: GetReviewsByProductId(). Product with id {productId} does not exist.");
                     return BadRequest($"Product with id {productId} does not exist.");
                 }
-                var reviews = await _repository.GetReviewsByProductId(productId);
+                var reviews = await _repository.GetReviewsByProductId(productId, pageIndex, pageSize);
 
                 if (reviews == null)
                 {

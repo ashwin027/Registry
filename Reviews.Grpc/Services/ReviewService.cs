@@ -21,12 +21,12 @@ namespace Reviews.Grpc.Services
             _repository = reviewRepository;
             _productClient = productClient;
         }
-        public override async Task<Reviews> GetAllReviews(Empty request, ServerCallContext context)
+        public override async Task<Reviews> GetAllReviews(ReviewsRequest request, ServerCallContext context)
         {
             Status status;
             try
             {
-                var reviews = await _repository.GetReviews();
+                var reviews = await _repository.GetReviews(request.PageIndex, request.PageSize);
 
                 if (reviews == null)
                 {
@@ -106,7 +106,7 @@ namespace Reviews.Grpc.Services
                 }
                 else
                 {
-                    var reviews = await _repository.GetReviewsByProductId(request.ProductId);
+                    var reviews = await _repository.GetReviewsByProductId(request.ProductId, request.PageIndex, request.PageSize);
 
                     if (reviews == null)
                     {

@@ -8,9 +8,9 @@ namespace Reviews.Repository
 {
     public interface IReviewRepository
     {
-        Task<List<Review>> GetReviews(int pageNumber = 1, int pageSize = 5);
+        Task<List<Review>> GetReviews(int? pageNumber, int? pageSize);
         Task<Review> GetReview(int id);
-        Task<List<Review>> GetReviewsByProductId(int productId, int pageNumber = 1, int pageSize = 5);
+        Task<List<Review>> GetReviewsByProductId(int productId, int? pageNumber = 1, int? pageSize = 5);
         Task<Review> CreateReview(Review review);
         Task<Review> UpdateReview(Review review);
         Task DeleteReview(int id);

@@ -1,12 +1,22 @@
 syntax = "proto3";
+
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
 option csharp_namespace = "Reviews.Grpc";
 
 package review;
 
 message ReviewRequestForProduct {
 	int32 productId = 1;
+    google.protobuf.Int32Value pageIndex = 2;
+	google.protobuf.Int32Value pageSize = 3;
+}
+
+message ReviewsRequest {
+    google.protobuf.Int32Value pageIndex = 2;
+	google.protobuf.Int32Value pageSize = 3;
 }
 
 message ReviewRequest{
@@ -27,7 +37,7 @@ message Reviews {
 }
 
 service Review {
-    rpc GetAllReviews (google.protobuf.Empty) returns (Reviews);
+    rpc GetAllReviews (ReviewsRequest) returns (Reviews);
     rpc GetReview (ReviewRequest) returns (ReviewResponse);
     rpc GetReviewsForProduct (ReviewRequestForProduct) returns (Reviews);
 }
