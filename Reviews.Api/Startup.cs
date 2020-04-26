@@ -30,6 +30,8 @@ namespace Reviews.Api
             services.AddDbContext<ReviewContext>();
             services.Configure<Config>(Configuration.GetSection("Config"));
 
+            services.AddScoped<IReviewRepository, ReviewRepository>();
+
             services.AddControllers();
         }
 

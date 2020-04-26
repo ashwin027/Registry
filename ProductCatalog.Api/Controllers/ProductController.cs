@@ -50,6 +50,7 @@ namespace ProductCatalog.Api.Controllers
             }
         }
 
+        // TODO: Add query strings for pagination
         [HttpGet("/api/products")]
         public async Task<ActionResult<List<Product>>> GetProducts()
         {
