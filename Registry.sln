@@ -27,6 +27,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Registry.Models", "Registry
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.Api", "ProductCatalog.Api\ProductCatalog.Api.csproj", "{D20775EA-C279-418F-ADEF-7DF73D780559}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reviews.Api", "Reviews.Api\Reviews.Api.csproj", "{311D91DF-80D9-4279-821D-3205AD0F647E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{D20775EA-C279-418F-ADEF-7DF73D780559}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D20775EA-C279-418F-ADEF-7DF73D780559}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D20775EA-C279-418F-ADEF-7DF73D780559}.Release|Any CPU.Build.0 = Release|Any CPU
+		{311D91DF-80D9-4279-821D-3205AD0F647E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{311D91DF-80D9-4279-821D-3205AD0F647E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{311D91DF-80D9-4279-821D-3205AD0F647E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{311D91DF-80D9-4279-821D-3205AD0F647E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +91,7 @@ Global
 		{44BE6148-6383-490C-91BD-1AF090EF94F9} = {DE43B855-A35E-4AF5-A215-EC46935864A6}
 		{DA1258B0-2D08-4AC2-82E2-931C1EB1190E} = {F3B190F1-30A5-4C4D-9020-E916B36E1743}
 		{D20775EA-C279-418F-ADEF-7DF73D780559} = {DE43B855-A35E-4AF5-A215-EC46935864A6}
+		{311D91DF-80D9-4279-821D-3205AD0F647E} = {F3B190F1-30A5-4C4D-9020-E916B36E1743}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0ABEC9BB-EE4D-4727-8A31-FB6F824FE5F0}
