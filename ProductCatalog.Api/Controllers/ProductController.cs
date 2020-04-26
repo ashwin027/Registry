@@ -52,11 +52,11 @@ namespace ProductCatalog.Api.Controllers
 
         // TODO: Add query strings for pagination
         [HttpGet("/api/products")]
-        public async Task<ActionResult<List<Product>>> GetProducts()
+        public async Task<ActionResult<List<Product>>> GetProducts(int? pageIndex, int? pageSize)
         {
             try
             {
-                var products = await _repository.GetProducts();
+                var products = await _repository.GetProducts(pageIndex, pageSize);
 
                 if (products == null)
                 {

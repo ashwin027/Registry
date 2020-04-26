@@ -59,12 +59,12 @@ namespace ProductCatalog.Grpc.Services
             }
         }
 
-        public override async Task<Products> GetProducts(Empty request, ServerCallContext context)
+        public override async Task<Products> GetProducts(ProductsRequest request, ServerCallContext context)
         {
             Status status;
             try
             {
-                var products = await _repository.GetProducts();
+                var products = await _repository.GetProducts(request.PageIndex, request.PageSize);
 
                 if (products == null)
                 {

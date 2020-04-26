@@ -8,7 +8,7 @@ namespace ProductCatalog.Repository
 {
     public interface IProductRepository
     {
-        Task<List<Product>> GetProducts(int pageNumber=1, int pageSize=5);
+        Task<List<Product>> GetProducts(int? pageNumber, int? pageSize);
         Task<Product> GetProduct(int? id);
         Task<Product> CreateProduct(Product product);
         Task<Product> UpdateProduct(Product product);

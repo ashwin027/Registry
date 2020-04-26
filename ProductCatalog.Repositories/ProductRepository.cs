@@ -22,14 +22,14 @@ namespace ProductCatalog.Repository
             _logger = logger;
         }
 
-        public async Task<List<Product>> GetProducts(int pageNumber, int pageSize)
+        public async Task<List<Product>> GetProducts(int? pageNumber, int? pageSize)
         {
             try
             {
                 IQueryable<Product> products = from p in _productDbContext.Products
                                                select p;
 
-                return await PaginatedList<Product>.CreateAsync(products.AsNoTracking(), pageNumber, pageSize);
+                return await PaginatedList<Product>.CreateAsync(products.AsNoTracking(), pageNumber ?? 1, pageSize ?? 5);
             }
             catch (Exception ex)
             {
