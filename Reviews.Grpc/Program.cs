@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace Reviews.Api
+namespace Reviews.Grpc
 {
     public class Program
     {

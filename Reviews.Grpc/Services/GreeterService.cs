@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 
-namespace Reviews.Api
+namespace Reviews.Grpc
 {
     public class GreeterService : Greeter.GreeterBase
     {
