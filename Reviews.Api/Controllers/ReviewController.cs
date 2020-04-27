@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using static ProductCatalog.Grpc.Product;
 using ProductCatalog.Grpc;
+using Reviews.Models;
 
 namespace Reviews.Api.Controllers
 {
@@ -49,7 +50,7 @@ namespace Reviews.Api.Controllers
         }
 
         [HttpGet("/api/reviews")]
-        public async Task<ActionResult<List<Review>>> GetReviews(int? pageIndex, int? pageSize)
+        public async Task<ActionResult<PaginatedList<Review>>> GetReviews(int? pageIndex, int? pageSize)
         {
             try
             {

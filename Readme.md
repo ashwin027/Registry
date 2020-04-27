@@ -29,19 +29,13 @@ First we need to install the dotnet ef core tools package (remmeber to restart p
 
 Navigate to the `ProductCatalog.Repositories` folder through powershell/command prompt and run the following commands to create the product catalog database and data,
 
-`dotnet ef migrations add initial-data --startup-project "..\ProductCatalog.Api"`
-
 `dotnet ef database update  --startup-project "..\ProductCatalog.Api"`
 
 Navigate to the `Reviews.Repository` folder and run the following commands to create the reviews database and data,
 
-`dotnet ef migrations add initial-data --startup-project "..\Reviews.Api"`
-
 `dotnet ef database update  --startup-project "..\Reviews.Api"`
 
 Navigate to the `Registry.Repository` folder and run the following commands to create the registry database,
-
-`dotnet ef migrations add initial-data --startup-project "..\Registry.UI"`
 
 `dotnet ef database update  --startup-project "..\Registry.UI"`
 
