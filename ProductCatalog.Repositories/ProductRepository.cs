@@ -24,7 +24,7 @@ namespace ProductCatalog.Repository
             _logger = logger;
         }
 
-        public async Task<List<Product>> GetProducts(int? pageNumber, int? pageSize)
+        public async Task<PaginatedList<Product>> GetProducts(int? pageNumber, int? pageSize)
         {
             try
             {

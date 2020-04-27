@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.Api", "Produ
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reviews.Api", "Reviews.Api\Reviews.Api.csproj", "{311D91DF-80D9-4279-821D-3205AD0F647E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Registry.Repository", "Registry.Repository\Registry.Repository.csproj", "{AFDC8D1E-0260-4BE5-9B38-9C9A755F0A88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Registry.Repository", "Registry.Repository\Registry.Repository.csproj", "{AFDC8D1E-0260-4BE5-9B38-9C9A755F0A88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

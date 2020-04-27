@@ -1,4 +1,5 @@
-﻿using ProductCatalog.Models.Entities;
+﻿using ProductCatalog.Common.Models;
+using ProductCatalog.Models.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,7 +9,7 @@ namespace ProductCatalog.Repository
 {
     public interface IProductRepository
     {
-        Task<List<Product>> GetProducts(int? pageNumber, int? pageSize);
+        Task<PaginatedList<Product>> GetProducts(int? pageNumber, int? pageSize);
         Task<Product> GetProduct(int? id);
         Task<Product> CreateProduct(Product product);
         Task<Product> UpdateProduct(Product product);

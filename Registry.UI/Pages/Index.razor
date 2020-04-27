@@ -1,6 +1,6 @@
 ﻿@page "/"
 @inherits IndexBase
-
+@using Registry.UI.Components
 
 <h3>My Registry</h3>
 
@@ -21,4 +21,5 @@
 {
     <div>No records found. Click the search button to search for and add products to your registry.</div>
 }
-<div></div>
+
+<ProductSearchDialog @ref="ProductSearchDialog" CloseEventCallBack="@SearchProductsDialog_OnDialogClose"></ProductSearchDialog>

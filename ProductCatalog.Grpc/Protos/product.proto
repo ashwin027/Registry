@@ -18,6 +18,9 @@ message ProductResponse {
 
 message Products {
 	repeated ProductResponse products = 1;
+	int32 PageIndex = 2;
+	int32 TotalPages = 3;
+	int32 TotalCount = 4;
 }
 
 message ProductRequest {

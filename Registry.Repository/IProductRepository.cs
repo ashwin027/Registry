@@ -8,7 +8,7 @@ namespace Registry.Repository
 {
     public interface IProductRepository
     {
-        Task<List<Product>> GetAllProducts(int? pageIndex, int? pageSize);
+        Task<PagedResult<Product>> GetAllProducts(int? pageIndex, int? pageSize);
         Task<List<Product>> GetProductsByIds(List<int> productsIds);
     }
 }

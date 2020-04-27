@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Registry.Models;
 using Registry.Repository;
+using Registry.UI.Components;
 using Registry.UI.Extensions;
 
 namespace Registry.UI.Pages
@@ -13,10 +14,12 @@ namespace Registry.UI.Pages
     public class IndexBase: ComponentBase
     {
         [Inject]
-        public IRegistryRepository _registryRepository { get; set; }
+        public IRegistryRepository RegistryRepository { get; set; }
 
         [Inject]
-        public IProductRepository _productRepository { get; set; }
+        public IProductRepository ProductRepository { get; set; }
+
+        protected ProductSearchDialog ProductSearchDialog { get; set; }
 
         public List<ProductAggregate> Products { get; set; } = new List<ProductAggregate>();
 
@@ -28,19 +31,27 @@ namespace Registry.UI.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            RegistryRecords = await _registryRepository.GetRegistryForUser(userId);
+            RegistryRecords = await RegistryRepository.GetRegistryForUser(userId);
             IsEmptyRegistry = RegistryRecords == null;
 
             if (!IsEmptyRegistry)
             {
-                var products = await _productRepository.GetProductsByIds(RegistryRecords.Select(r => r.ProductId).ToList());
+                var products = await ProductRepository.GetProductsByIds(RegistryRecords.Select(r => r.ProductId).ToList());
                 Products = products.Select(p => p.ToAggregate(RegistryRecords.FirstOrDefault(r => r.ProductId == p.Id)?.Quantity)).ToList();
             }
         }
 
         public void Search(MouseEventArgs args)
         {
-
+            ProductSearchDialog.Show();
         }
+
+        public void SearchProductsDialog_OnDialogClose()
+        {
+            StateHasChanged();
+            //Employees = await EmployeeDataService.GetAllEmployees();
+            //StateHasChanged();
+        }
+
     }
 }

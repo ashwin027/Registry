@@ -70,6 +70,9 @@ namespace ProductCatalog.Grpc.Services
                 else
                 {
                     var productsResponse = new Products();
+                    productsResponse.PageIndex = products.PageIndex;
+                    productsResponse.TotalPages = products.TotalPages;
+                    productsResponse.TotalCount = products.TotalCount;
                     productsResponse.Products_.Add(products.Select(p => p.ToGrpcModel()));
                     
                     return productsResponse;
