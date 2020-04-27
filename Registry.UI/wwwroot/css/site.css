@@ -206,3 +206,24 @@ app {
 .search-button-container {
     display: flex;
 }
+
+.as-flex {
+    display: flex;
+}
+
+.occupy-all-flex {
+    flex: 1;
+    margin-right: 5px;
+}
+
+.review-title-container {
+    box-shadow: 1px 1px 1px #aaaaaa;
+}
+
+.review-title {
+    font-weight: bold;
+}
+
+.review-date{
+    font-size: small;
+}

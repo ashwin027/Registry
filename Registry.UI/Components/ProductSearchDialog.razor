@@ -7,13 +7,13 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="titleLabel">Search products</h5>
-                    <button type="button" class="close" data-dismiss="modal" @onclick="@Close" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" @onclick="Close" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="search-container">
-                        <div class="search-textbox-container">
+                    <div class="as-flex">
+                        <div class="occupy-all-flex">
                             <DxTextBox @bind-Text="@SearchText"
                                        NullText="Search products"
                                        CssClass="search-text"
@@ -46,9 +46,29 @@
                         <DetailRowTemplate>
                             <DxTabs>
                                 <DxTabPage Text="Reviews">
-                                    @if (test != null)
+                                    @{
+                                        var reviews = OnRowExpanded(context);
+                                    }
+                                    @if (reviews.Data.Count > 0)
                                     {
-                                    <div>@test</div>
+                                        @foreach (var review in reviews?.Data)
+                                        {
+                                            <div class="card border-light mb-3 review-title-container">
+                                                <div class="card-header">
+                                                    <div class="as-flex">
+                                                        <div class="occupy-all-flex review-title">@review?.Title</div>
+                                                        <div class="review-date">Submitted on @review?.SubmitDate.ToString("dd/MMM/yyyy")</div>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <p class="card-text">@review?.Description</p>
+                                                </div>
+                                            </div>
+                                        }
+                                        <DxPager PageCount="reviews.TotalPages"
+                                                 ActivePageIndex="reviews.PageIndex - 1"
+                                                 NavigationMode="PagerNavigationMode.InputBox">
+                                        </DxPager>
                                     }
                                     else
                                     {

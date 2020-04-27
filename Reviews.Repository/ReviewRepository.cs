@@ -53,7 +53,7 @@ namespace Reviews.Repository
             }
         }
 
-        public async Task<List<Review>> GetReviews(int? pageNumber, int? pageSize)
+        public async Task<PaginatedList<Review>> GetReviews(int? pageNumber, int? pageSize)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace Reviews.Repository
             }
         }
 
-        public async Task<List<Review>> GetReviewsByProductId(int productId, int? pageNumber, int? pageSize)
+        public async Task<PaginatedList<Review>> GetReviewsByProductId(int productId, int? pageNumber, int? pageSize)
         {
             try
             {

@@ -8,6 +8,6 @@ namespace Registry.Repository
 {
     public interface IReviewRepository
     {
-        Task<List<Review>> GetReviewsForProduct(int productId, int? pageIndex, int? pageSize);        
+        Task<PagedResult<Review>> GetReviewsForProduct(int productId, int? pageIndex, int? pageSize);        
     }
 }

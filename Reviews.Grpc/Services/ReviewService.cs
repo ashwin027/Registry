@@ -36,6 +36,9 @@ namespace Reviews.Grpc.Services
                 else
                 {
                     var reviewsResponse = new Reviews();
+                    reviewsResponse.PageIndex = reviews.PageIndex;
+                    reviewsResponse.TotalPages = reviews.TotalPages;
+                    reviewsResponse.TotalCount = reviews.TotalCount;
                     reviewsResponse.Reviews_.Add(reviews.Select(p => new ReviewResponse
                     {
                         Id = p.Id,
@@ -116,6 +119,9 @@ namespace Reviews.Grpc.Services
                     else
                     {
                         var reviewsResponse = new Reviews();
+                        reviewsResponse.PageIndex = reviews.PageIndex;
+                        reviewsResponse.TotalPages = reviews.TotalPages;
+                        reviewsResponse.TotalCount = reviews.TotalCount;
                         reviewsResponse.Reviews_.Add(reviews.Select(p => new ReviewResponse
                         {
                             Id = p.Id,

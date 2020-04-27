@@ -16,13 +16,16 @@ namespace Registry.Repository
         {
             _reviewClient = reviewClient;
         }
-        public async Task<List<Review>> GetReviewsForProduct(int productId, int? pageIndex, int? pageSize)
+        public async Task<PagedResult<Review>> GetReviewsForProduct(int productId, int? pageIndex, int? pageSize)
         {
             try
             {
-                var reviewModels = new List<Models.Review>();
+                var reviewModels = new PagedResult<Models.Review>();
                 var reviews = await _reviewClient.GetReviewsForProductAsync(new Reviews.Grpc.ReviewRequestForProduct() { PageIndex = pageIndex, PageSize = pageSize, ProductId = productId  });
-                reviewModels.AddRange(reviews.Reviews_.Select(r => r.ToModel()));
+                reviewModels.TotalCount = reviews.TotalCount;
+                reviewModels.TotalPages = reviews.TotalPages;
+                reviewModels.PageIndex = reviews.PageIndex;
+                reviewModels.Data.AddRange(reviews.Reviews_.Select(r => r.ToModel()));
 
                 return reviewModels;
             }
