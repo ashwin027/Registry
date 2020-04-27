@@ -32,9 +32,22 @@ namespace Registry.Repository
             }
         }
 
-        public Task<List<Models.Product>> GetProductsByIds(List<int> productsIds)
+        public async Task<List<Models.Product>> GetProductsByIds(List<int> productsIds)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var productModels = new List<Models.Product>();
+                var request = new ProductByIdsRequest();
+                request.Ids.AddRange(productsIds);
+                var products = await _productClient.GetProductsByIdsAsync(request);
+                productModels.AddRange(products.Products_.Select(p => p.ToModel()));
+
+                return productModels;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

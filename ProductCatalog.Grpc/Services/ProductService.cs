@@ -2,6 +2,7 @@
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
+using ProductCatalog.Grpc.Extensions;
 using ProductCatalog.Repository;
 using System;
 using System.Collections.Generic;
@@ -41,12 +42,7 @@ namespace ProductCatalog.Grpc.Services
                     }
                     else
                     {
-                        return new ProductResponse()
-                        {
-                            Id = product.Id,
-                            Description = product?.Description,
-                            Name = product?.Name
-                        };
+                        return product.ToGrpcModel();
                     }
                 }
 
@@ -74,14 +70,46 @@ namespace ProductCatalog.Grpc.Services
                 else
                 {
                     var productsResponse = new Products();
-                    productsResponse.Products_.Add(products.Select(p => new ProductResponse
-                    {
-                        Id = p.Id,
-                        Description = p?.Description,
-                        Name = p?.Name
-                    }));
+                    productsResponse.Products_.Add(products.Select(p => p.ToGrpcModel()));
                     
                     return productsResponse;
+                }
+
+                throw new RpcException(status);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Server Error in ProductService,{context.Method}");
+                throw new RpcException(Status.DefaultCancelled, ex.Message);
+            }
+        }
+
+        public override async Task<Products> GetProductsByIds(ProductByIdsRequest request, ServerCallContext context)
+        {
+            Status status;
+            try
+            {
+                if (request?.Ids==null)
+                {
+                    status = new Status(StatusCode.NotFound, $"No product Ids in request.");
+                    _logger.LogError($"ProductService, method: GetProducts(). No product Ids in request.");
+                }
+                else
+                {
+                    var products = await _repository.GetProductsByIds(request.Ids.ToList());
+
+                    if (products == null)
+                    {
+                        status = new Status(StatusCode.NotFound, $"Products not found.");
+                        _logger.LogError($"ProductService, method: GetProducts(). Products not found.");
+                    }
+                    else
+                    {
+                        var productsResponse = new Products();
+                        productsResponse.Products_.Add(products.Select(p => p.ToGrpcModel()));
+
+                        return productsResponse;
+                    }
                 }
 
                 throw new RpcException(status);

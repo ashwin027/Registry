@@ -6,6 +6,10 @@ option csharp_namespace = "ProductCatalog.Grpc";
 
 package product;
 
+message ProductByIdsRequest{
+	repeated int32 ids = 1;
+}
+
 message ProductResponse {
 	int32 id = 1;
 	string name = 2;
@@ -28,4 +32,5 @@ message ProductsRequest {
 service Product {
 	rpc GetProduct (ProductRequest) returns (ProductResponse);
 	rpc GetProducts (ProductsRequest) returns (Products);
+	rpc GetProductsByIds (ProductByIdsRequest) returns (Products);
 }

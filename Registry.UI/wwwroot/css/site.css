@@ -181,3 +181,11 @@ app {
         display: block;
     }
 }
+
+.right-space{
+    margin-right: 5px;
+}
+
+.search-button{
+    margin-bottom: 5px;
+}

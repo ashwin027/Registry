@@ -122,5 +122,19 @@ namespace ProductCatalog.Repository
                 throw ex;
             }
         }
+
+        public async Task<List<Product>> GetProductsByIds(List<int> ids)
+        {
+            try
+            {
+                var products = await _productDbContext.Products.Where(p => ids.Contains(p.Id)).ToListAsync();
+                return products;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Server Error in GetProductsByIds().", ex);
+                throw ex;
+            }
+        }
     }
 }

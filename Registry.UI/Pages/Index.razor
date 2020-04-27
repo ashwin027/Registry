@@ -1,8 +1,24 @@
 ﻿@page "/"
 @inherits IndexBase
- 
+
 
 <h3>My Registry</h3>
 
-Welcome to your new app.
-
+<DxButton RenderStyle="ButtonRenderStyle.Primary" CssClass="search-button" Click="@Search" IconCssClass="fas fa-search right-space" Text="Search Products">
+</DxButton>
+<DxDataGrid Data="@Products"
+            PageSize="5"
+            ShowFilterRow="false"
+            style="width:100%">
+    <DxDataGridColumn Field="@nameof(Models.Product.Id)">
+    </DxDataGridColumn>
+    <DxDataGridColumn Field="@nameof(Models.Product.Name)">
+    </DxDataGridColumn>
+    <DxDataGridColumn Field="@nameof(Models.Product.Description)">
+    </DxDataGridColumn>
+</DxDataGrid>
+@if (IsEmptyRegistry)
+{
+    <div>No records found. Click the search button to search for and add products to your registry.</div>
+}
+<div></div>
