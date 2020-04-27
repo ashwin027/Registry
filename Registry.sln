@@ -17,8 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reviews.Grpc", "Reviews.Grp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.Grpc", "ProductCatalog.Grpc\ProductCatalog.Grpc.csproj", "{FFA6F644-4476-424F-BA3C-2FEE3FFA6A0A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Registry.Aggregator", "Registry.Aggregator\Registry.Aggregator.csproj", "{FAB32127-E10D-4820-B820-7F48DDE75C04}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.Models", "ProductCatalog.Models\ProductCatalog.Models.csproj", "{44BE6148-6383-490C-91BD-1AF090EF94F9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reviews.Models", "Reviews.Models\Reviews.Models.csproj", "{DA1258B0-2D08-4AC2-82E2-931C1EB1190E}"
@@ -27,7 +25,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Registry.Models", "Registry
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.Api", "ProductCatalog.Api\ProductCatalog.Api.csproj", "{D20775EA-C279-418F-ADEF-7DF73D780559}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reviews.Api", "Reviews.Api\Reviews.Api.csproj", "{311D91DF-80D9-4279-821D-3205AD0F647E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reviews.Api", "Reviews.Api\Reviews.Api.csproj", "{311D91DF-80D9-4279-821D-3205AD0F647E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Registry.Repository", "Registry.Repository\Registry.Repository.csproj", "{AFDC8D1E-0260-4BE5-9B38-9C9A755F0A88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,10 +55,6 @@ Global
 		{FFA6F644-4476-424F-BA3C-2FEE3FFA6A0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFA6F644-4476-424F-BA3C-2FEE3FFA6A0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFA6F644-4476-424F-BA3C-2FEE3FFA6A0A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FAB32127-E10D-4820-B820-7F48DDE75C04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FAB32127-E10D-4820-B820-7F48DDE75C04}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FAB32127-E10D-4820-B820-7F48DDE75C04}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FAB32127-E10D-4820-B820-7F48DDE75C04}.Release|Any CPU.Build.0 = Release|Any CPU
 		{44BE6148-6383-490C-91BD-1AF090EF94F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{44BE6148-6383-490C-91BD-1AF090EF94F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44BE6148-6383-490C-91BD-1AF090EF94F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -79,6 +75,10 @@ Global
 		{311D91DF-80D9-4279-821D-3205AD0F647E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{311D91DF-80D9-4279-821D-3205AD0F647E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{311D91DF-80D9-4279-821D-3205AD0F647E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFDC8D1E-0260-4BE5-9B38-9C9A755F0A88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFDC8D1E-0260-4BE5-9B38-9C9A755F0A88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFDC8D1E-0260-4BE5-9B38-9C9A755F0A88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFDC8D1E-0260-4BE5-9B38-9C9A755F0A88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

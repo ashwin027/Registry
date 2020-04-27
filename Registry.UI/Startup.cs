@@ -5,9 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Registry.Models;
+using Registry.Repository;
+using static ProductCatalog.Grpc.Product;
+using static Reviews.Grpc.Review;
 
 namespace Registry.UI
 {
@@ -24,6 +29,24 @@ namespace Registry.UI
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            var configSection = Configuration.GetSection(nameof(Config));
+            var config = configSection.Get<Config>();
+            services.Configure<Config>(configSection);
+
+            services.AddGrpcClient<ProductClient>(o =>
+            {
+                o.Address = new Uri(config.ProductEndpoint);
+            });
+            services.AddGrpcClient<ReviewClient>(o =>
+            {
+                o.Address = new Uri(config.ReviewEndpoint);
+            });
+
+            services.AddDbContext<RegistryContext>();
+            services.AddScoped<IRegistryRepository, RegistryRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IReviewRepository, ReviewRepository>();
+
             services.AddRazorPages();
             services.AddServerSideBlazor();
         }
