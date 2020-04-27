@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ProductCatalog.Common.Models;
 using ProductCatalog.Models.Entities;
 using ProductCatalog.Repository;
 using System;
@@ -50,9 +51,8 @@ namespace ProductCatalog.Api.Controllers
             }
         }
 
-        // TODO: Add query strings for pagination
         [HttpGet("/api/products")]
-        public async Task<ActionResult<List<Product>>> GetProducts(int? pageIndex, int? pageSize)
+        public async Task<ActionResult<PaginatedList<Product>>> GetProducts(int? pageIndex, int? pageSize)
         {
             try
             {
