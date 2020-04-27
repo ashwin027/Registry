@@ -1,4 +1,5 @@
 ﻿using DevExpress.Blazor;
+using DevExpress.Blazor.Internal;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Data.ResponseModel;
 using Microsoft.AspNetCore.Components;
@@ -25,8 +26,17 @@ namespace Registry.UI.Components
         public const int InitialPageSize = 3;
         public int currentPageIndex { get; set; }
         public int currentPageSize { get; set; }
-        public DxDataGrid<Product> _gridRef;
+        public DxDataGrid<Product> _gridRef { get; set; }
+        public bool IsReviewsLoading = false;
 
+        protected override void OnAfterRender(bool firstRender)
+        {
+            if (_gridRef!=null && _gridRef.DetailRows != null)
+            {
+                _gridRef.RowClick = OnRowExpanded;
+            }
+            
+        }
         public async Task<LoadResult> LoadProducts(DataSourceLoadOptionsBase options, CancellationToken cancellationToken)
         {
             try
@@ -77,6 +87,15 @@ namespace Registry.UI.Components
         public async void Search(MouseEventArgs args)
         {
             await _gridRef.Refresh();
+        }
+
+        public async void OnRowExpanded(DataGridRowClickEventArgs<Models.Product> eventArgs)
+        {
+            IsReviewsLoading = true;
+            if (_gridRef.DetailRows.IsRowExpanded(eventArgs.DataItem.Id))
+            {
+
+            }
         }
     }
 }

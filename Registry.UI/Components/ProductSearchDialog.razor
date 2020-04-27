@@ -1,4 +1,4 @@
-﻿@inherits ProductSearchDialogBase 
+﻿@inherits ProductSearchDialogBase
 
 @if (ShowDialog)
 {
@@ -27,17 +27,36 @@
                     <DxDataGrid T="@Models.Product" CustomData="@LoadProducts" @ref="_gridRef"
                                 PageSize="@InitialPageSize"
                                 ShowFilterRow="false"
-                                ShowPager="true" 
-                                PagerPageSizeSelectorVisible="true" 
-                                PagerAllowedPageSizes=@(new int[] {5,10,20,40}) 
+                                ShowPager="true"
+                                AutoCollapseDetailRow="true"
+                                ShowDetailRow="true"
+                                SelectionMode="DataGridSelectionMode.None"
+                                PagerPageSizeSelectorVisible="true"
+                                PagerAllowedPageSizes=@(new int[] {5,10,20,40})
                                 PagerNavigationMode=PagerNavigationMode.InputBox
                                 style="width:100%">
-                        <DxDataGridColumn Field="@nameof(Models.Product.Id)">
-                        </DxDataGridColumn>
-                        <DxDataGridColumn Field="@nameof(Models.Product.Name)">
-                        </DxDataGridColumn>
-                        <DxDataGridColumn Field="@nameof(Models.Product.Description)">
-                        </DxDataGridColumn>
+                        <Columns>
+                            <DxDataGridColumn Field="@nameof(Models.Product.Id)">
+                            </DxDataGridColumn>
+                            <DxDataGridColumn Field="@nameof(Models.Product.Name)">
+                            </DxDataGridColumn>
+                            <DxDataGridColumn Field="@nameof(Models.Product.Description)">
+                            </DxDataGridColumn>
+                        </Columns>
+                        <DetailRowTemplate>
+                            <DxTabs>
+                                <DxTabPage Text="Reviews">
+                                    @if (test != null)
+                                    {
+                                    <div>@test</div>
+                                    }
+                                    else
+                                    {
+                                        <em>Loading reviews...</em>
+                                    }
+                                </DxTabPage>
+                            </DxTabs>
+                        </DetailRowTemplate>
                     </DxDataGrid>
 
                 </div>
