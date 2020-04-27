@@ -2,7 +2,7 @@
 
 @if (ShowDialog)
 {
-    <div class="modal fade show d-block" id="exampleModal" tabindex="-1" role="dialog">
+    <div class="modal fade show d-block" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -24,8 +24,10 @@
                             </DxButton>
                         </div>
                     </div>
-                    <DxDataGrid T="@Models.Product" CustomData="@LoadProducts" @ref="_gridRef"
-                                PageSize="@InitialPageSize"
+                    <DxDataGrid T="@Models.ProductAggregate"
+                                CustomData="@LoadProducts"
+                                @ref="_gridRef"
+                                PageSize="@InitialProductPageSize"
                                 ShowFilterRow="false"
                                 ShowPager="true"
                                 AutoCollapseDetailRow="true"
@@ -36,11 +38,29 @@
                                 PagerNavigationMode=PagerNavigationMode.InputBox
                                 style="width:100%">
                         <Columns>
-                            <DxDataGridColumn Field="@nameof(Models.Product.Id)">
+                            <DxDataGridColumn Field="@nameof(Models.ProductAggregate.Id)">
                             </DxDataGridColumn>
-                            <DxDataGridColumn Field="@nameof(Models.Product.Name)">
+                            <DxDataGridColumn Field="@nameof(Models.ProductAggregate.Name)">
                             </DxDataGridColumn>
-                            <DxDataGridColumn Field="@nameof(Models.Product.Description)">
+                            <DxDataGridColumn Field="@nameof(Models.ProductAggregate.Description)">
+                            </DxDataGridColumn>
+                            <DxDataGridColumn Field="@nameof(Models.ProductAggregate.Quantity)">
+                                <DisplayTemplate>
+                                    @{
+                                        var cxt = (context as Models.ProductAggregate);
+                                        <DxSpinEdit @bind-Value="@cxt.Quantity" MinValue="0"></DxSpinEdit>
+                                    }
+                                </DisplayTemplate>
+                            </DxDataGridColumn>
+                            <DxDataGridColumn Caption="Actions">
+                                <DisplayTemplate>
+                                    <RegistryActions 
+                                                     ProductAggregate="@(context as Models.ProductAggregate)" 
+                                                     UserId="@UserId"
+                                                     OnUpdated="@RefreshData" 
+                                                     OnValidationError="@ShowValidationError">
+                                    </RegistryActions>
+                                </DisplayTemplate>
                             </DxDataGridColumn>
                         </Columns>
                         <DetailRowTemplate>
@@ -49,31 +69,25 @@
                                     @{
                                         var reviews = OnRowExpanded(context);
                                     }
-                                    @if (reviews.Data.Count > 0)
+
+                                    @foreach (var review in reviews?.Data)
                                     {
-                                        @foreach (var review in reviews?.Data)
-                                        {
-                                            <div class="card border-light mb-3 review-title-container">
-                                                <div class="card-header">
-                                                    <div class="as-flex">
-                                                        <div class="occupy-all-flex review-title">@review?.Title</div>
-                                                        <div class="review-date">Submitted on @review?.SubmitDate.ToString("dd/MMM/yyyy")</div>
-                                                    </div>
-                                                </div>
-                                                <div class="card-body">
-                                                    <p class="card-text">@review?.Description</p>
+                                        <div class="card border-light mb-3 review-title-container">
+                                            <div class="card-header">
+                                                <div class="as-flex">
+                                                    <div class="occupy-all-flex review-title">@review?.Title</div>
+                                                    <div class="review-date">Submitted on @review?.SubmitDate.ToString("dd/MMM/yyyy")</div>
                                                 </div>
                                             </div>
-                                        }
-                                        <DxPager PageCount="reviews.TotalPages"
-                                                 ActivePageIndex="reviews.PageIndex - 1"
-                                                 NavigationMode="PagerNavigationMode.InputBox">
-                                        </DxPager>
+                                            <div class="card-body">
+                                                <p class="card-text">@review?.Description</p>
+                                            </div>
+                                        </div>
                                     }
-                                    else
-                                    {
-                                        <em>Loading reviews...</em>
-                                    }
+                                    <DxPager PageCount="reviews.TotalPages"
+                                             ActivePageIndex="reviews.PageIndex - 1"
+                                             NavigationMode="PagerNavigationMode.InputBox">
+                                    </DxPager>
                                 </DxTabPage>
                             </DxTabs>
                         </DetailRowTemplate>
@@ -83,4 +97,13 @@
             </div>
         </div>
     </div>
+    <div class="target-container" @onclick="@(() => PopupVisible = true)"></div>
+    <DxPopup HeaderText="Error"
+             @bind-Visible="@PopupVisible">
+        <Content>
+            <p>
+                Quantity has to be greater than 0.
+            </p>
+        </Content>
+    </DxPopup>
 }

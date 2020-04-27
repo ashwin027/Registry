@@ -8,12 +8,17 @@ namespace Registry.UI.Extensions
 {
     public static class ProductExtensions
     {
-        public static ProductAggregate ToAggregate(this Product product, int? quantity)
+        public static ProductAggregate ToAggregate(this Product product, RegistryRecord registryRecord, bool isAdded)
         {
-            var productAggregate = (ProductAggregate)product;
-            productAggregate.Quantity = quantity;
-
-            return productAggregate;
+            return new ProductAggregate()
+            {
+                Id = product.Id,
+                Quantity = registryRecord?.Quantity,
+                Description = product.Description,
+                Name = product.Name,
+                RegistryId = registryRecord?.Id,
+                IsAdded = isAdded
+            };
         }
     }
 }

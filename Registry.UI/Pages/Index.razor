@@ -7,19 +7,41 @@
 <DxButton RenderStyle="ButtonRenderStyle.Primary" CssClass="search-button" Click="@Search" IconCssClass="fas fa-search right-space" Text="Search Products">
 </DxButton>
 <DxDataGrid Data="@Products"
+            @ref="_gridRef"
+            SelectionMode="DataGridSelectionMode.None"
             PageSize="5"
             ShowFilterRow="false"
             style="width:100%">
-    <DxDataGridColumn Field="@nameof(Models.Product.Id)">
+    <DxDataGridColumn Field="@nameof(Models.ProductAggregate.Id)">
     </DxDataGridColumn>
-    <DxDataGridColumn Field="@nameof(Models.Product.Name)">
+    <DxDataGridColumn Field="@nameof(Models.ProductAggregate.Name)">
     </DxDataGridColumn>
-    <DxDataGridColumn Field="@nameof(Models.Product.Description)">
+    <DxDataGridColumn Field="@nameof(Models.ProductAggregate.Description)">
+    </DxDataGridColumn>
+    <DxDataGridColumn Field="@nameof(Models.ProductAggregate.Quantity)">
+        <DisplayTemplate>
+            @{
+                var cxt = (context as Models.ProductAggregate);
+                <DxSpinEdit @bind-Value="@cxt.Quantity" MinValue="0"></DxSpinEdit>
+            }
+        </DisplayTemplate>
+    </DxDataGridColumn>
+    <DxDataGridColumn Caption="Actions">
+        <DisplayTemplate>
+            <RegistryActions ProductAggregate="@(context as Models.ProductAggregate)"
+                             UserId="@UserId"
+                             OnUpdated="@RefreshData"
+                             OnValidationError="@ShowValidationError">
+            </RegistryActions>
+        </DisplayTemplate>
     </DxDataGridColumn>
 </DxDataGrid>
-@if (IsEmptyRegistry)
-{
-    <div>No records found. Click the search button to search for and add products to your registry.</div>
-}
-
 <ProductSearchDialog @ref="ProductSearchDialog" CloseEventCallBack="@SearchProductsDialog_OnDialogClose"></ProductSearchDialog>
+<DxPopup HeaderText="Error"
+         @bind-Visible="@PopupVisible">
+    <Content>
+        <p>
+            Quantity has to be greater than 0.
+        </p>
+    </Content>
+</DxPopup>

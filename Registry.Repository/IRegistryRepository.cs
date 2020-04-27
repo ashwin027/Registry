@@ -10,6 +10,6 @@ namespace Registry.Repository
         Task<List<Models.RegistryRecord>> GetRegistryForUser(int userId);
         Task<Models.RegistryRecord> AddToRegistry(Models.RegistryRecord registry);
         Task<Models.RegistryRecord> UpdateRegistry(Models.RegistryRecord registry);
-        Task RemoveFromRegistry(int id);
+        Task RemoveFromRegistry(int? id);
     }
 }

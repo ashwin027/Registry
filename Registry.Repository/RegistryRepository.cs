@@ -51,7 +51,7 @@ namespace Registry.Repository
             }
         }
 
-        public async Task RemoveFromRegistry(int id)
+        public async Task RemoveFromRegistry(int? id)
         {
             try
             {

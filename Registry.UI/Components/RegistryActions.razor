@@ -1,0 +1,24 @@
+﻿@inherits RegistryActionsBase
+
+<div class="as-flex">
+    @{
+        <div>
+            <DxButton RenderStyle="ButtonRenderStyle.None"
+                      Title="@(ProductAggregate.IsAdded ? "Remove" : "Add")"
+                      Click="(args) => { AddOrRemove(ProductAggregate); }"
+                      IconCssClass="@(ProductAggregate.IsAdded ? "fas fa-minus-circle" : "fas fa-plus-circle")">
+            </DxButton>
+        </div>
+        if (ProductAggregate.IsAdded)
+        {
+            <div>
+                <DxButton RenderStyle="ButtonRenderStyle.None"
+                          Title="Update"
+                          Enabled="@((ProductAggregate.Quantity!=null && ProductAggregate.Quantity>0) ? true : false)"
+                          Click="(args) => { Update(ProductAggregate); }"
+                          IconCssClass="fas fa-save">
+                </DxButton>
+            </div>
+        }
+    }
+</div>
