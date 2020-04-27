@@ -10,6 +10,12 @@ message ProductByIdsRequest{
 	repeated int32 ids = 1;
 }
 
+message SearchProductRequest {
+	string searchText = 1;
+	google.protobuf.Int32Value pageIndex = 2;
+	google.protobuf.Int32Value pageSize = 3;
+}
+
 message ProductResponse {
 	int32 id = 1;
 	string name = 2;
@@ -36,4 +42,5 @@ service Product {
 	rpc GetProduct (ProductRequest) returns (ProductResponse);
 	rpc GetProducts (ProductsRequest) returns (Products);
 	rpc GetProductsByIds (ProductByIdsRequest) returns (Products);
+	rpc SearchProducts (SearchProductRequest) returns (Products);
 }

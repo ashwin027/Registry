@@ -123,5 +123,37 @@ namespace ProductCatalog.Grpc.Services
                 throw new RpcException(Status.DefaultCancelled, ex.Message);
             }
         }
+
+        public override async Task<Products> SearchProducts(SearchProductRequest request, ServerCallContext context)
+        {
+            Status status;
+            try
+            {
+                var products = await _repository.SearchProducts(request.SearchText, request.PageIndex, request.PageSize);
+
+                if (products == null)
+                {
+                    status = new Status(StatusCode.NotFound, $"Products not found.");
+                    _logger.LogError($"ProductService, method: GetProducts(). Products not found.");
+                }
+                else
+                {
+                    var productsResponse = new Products();
+                    productsResponse.PageIndex = products.PageIndex;
+                    productsResponse.TotalPages = products.TotalPages;
+                    productsResponse.TotalCount = products.TotalCount;
+                    productsResponse.Products_.Add(products.Select(p => p.ToGrpcModel()));
+
+                    return productsResponse;
+                }
+
+                throw new RpcException(status);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Server Error in ProductService,{context.Method}");
+                throw new RpcException(Status.DefaultCancelled, ex.Message);
+            }
+        }
     }
 }

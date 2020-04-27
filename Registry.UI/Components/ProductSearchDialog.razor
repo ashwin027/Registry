@@ -12,10 +12,19 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <DxTextBox @bind-Text="@SearchText" 
-                               NullText="Search products" 
-                               ClearButtonDisplayMode="@DataEditorClearButtonDisplayMode.Auto"></DxTextBox>
-                    <DxDataGrid T="@Models.Product" CustomData="@LoadProducts"
+                    <div class="search-container">
+                        <div class="search-textbox-container">
+                            <DxTextBox @bind-Text="@SearchText"
+                                       NullText="Search products"
+                                       CssClass="search-text"
+                                       ClearButtonDisplayMode="@DataEditorClearButtonDisplayMode.Auto"></DxTextBox>
+                        </div>
+                        <div class="search-button-container">
+                            <DxButton RenderStyle="ButtonRenderStyle.Primary" CssClass="search-button" Click="@Search" IconCssClass="fas fa-search right-space">
+                            </DxButton>
+                        </div>
+                    </div>
+                    <DxDataGrid T="@Models.Product" CustomData="@LoadProducts" @ref="_gridRef"
                                 PageSize="@InitialPageSize"
                                 ShowFilterRow="false"
                                 ShowPager="true" 

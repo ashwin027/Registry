@@ -189,3 +189,20 @@ app {
 .search-button{
     margin-bottom: 5px;
 }
+
+.search-text{
+    margin-bottom: 5px;
+}
+
+.search-container {
+    display: flex;
+}
+
+.search-textbox-container {
+    flex: 1;
+    margin-right: 5px;
+}
+
+.search-button-container {
+    display: flex;
+}

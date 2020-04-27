@@ -136,5 +136,19 @@ namespace ProductCatalog.Repository
                 throw ex;
             }
         }
+
+        public async Task<PaginatedList<Product>> SearchProducts(string searchText, int? pageNumber, int? pageSize)
+        {
+            try
+            {
+                var products = _productDbContext.Products.Where(p => p.Name.Contains(searchText) || p.Description.Contains(searchText));
+                return await PaginatedList<Product>.CreateAsync(products.AsNoTracking(), pageNumber ?? defaultPageIndex, pageSize ?? defaultPageSize);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Server Error in SearchProducts().", ex);
+                throw ex;
+            }
+        }
     }
 }

@@ -53,5 +53,24 @@ namespace Registry.Repository
                 throw ex;
             }
         }
+
+        public async Task<PagedResult<Models.Product>> SearchProducts(string searchText, int? pageIndex, int? pageSize)
+        {
+            try
+            {
+                var productModels = new PagedResult<Models.Product>();
+                var products = await _productClient.SearchProductsAsync(new SearchProductRequest() { SearchText = searchText, PageIndex = pageIndex, PageSize = pageSize });
+                productModels.TotalPages = products.TotalPages;
+                productModels.PageIndex = products.PageIndex;
+                productModels.TotalCount = products.TotalCount;
+                productModels.Data.AddRange(products.Products_.Select(p => p.ToModel()));
+
+                return productModels;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
