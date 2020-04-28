@@ -3,7 +3,7 @@
 ### Summary
 This is an example project used to demonstrate the microservices pattern. There are mainly 3 microservices,
 
-1. Product catalog - This service that stores and maintains products with a full crud rest API and a GRPC endpoint that can be consumed by other microservices.
+1. Product catalog - This service stores and maintains products with a full crud rest API and a GRPC endpoint that can be consumed by other microservices.
 2. Reviews - This microservice stores and maintains reviews for products.
 3. Registry - This application consumes the product catalog and the reviews microservices and constructs the UI.
 
@@ -23,7 +23,7 @@ The application has been built with,
 #### Migrations
 To create the database and seed data, run the following commands from a command prompt window,
 
-First we need to install the dotnet ef core tools package (remmeber to restart powershell after install),
+First we need to install the dotnet ef core tools package (remember to restart powershell after install),
 
 `dotnet tool install --global dotnet-ef`
 
