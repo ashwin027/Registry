@@ -140,6 +140,7 @@ namespace ProductCatalog.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProduct(int? id)
         {
+            // TODO: Add a service bus to delete reviews and flag products in registries that have the deleted product
             try
             {
                 if (id == null)

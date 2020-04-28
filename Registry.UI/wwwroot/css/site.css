@@ -217,7 +217,7 @@ app {
 }
 
 .review-title-container {
-    box-shadow: 1px 1px 1px #aaaaaa;
+    box-shadow: 0 .1rem 0.3rem rgba(0,0,0,.15);
 }
 
 .review-title {

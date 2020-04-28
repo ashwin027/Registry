@@ -164,7 +164,6 @@ namespace Reviews.Api.Controllers
             }
         }
 
-        // TODO add pagination
         [HttpGet("/api/reviews/product/{productId}")]
         public async Task<ActionResult<List<Review>>> GetReviewsByProductId(int productId, int? pageIndex, int? pageSize)
         {

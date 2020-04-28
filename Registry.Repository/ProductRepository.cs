@@ -1,4 +1,5 @@
-﻿using ProductCatalog.Grpc;
+﻿using Microsoft.Extensions.Logging;
+using ProductCatalog.Grpc;
 using Registry.Models;
 using Registry.Repository.Extensions;
 using System;
@@ -12,10 +13,12 @@ namespace Registry.Repository
 {
     public class ProductRepository : IProductRepository
     {
+        private readonly ILogger<ProductRepository> _logger;
         private readonly ProductClient _productClient;
-        public ProductRepository(ProductClient productClient)
+        public ProductRepository(ProductClient productClient, ILogger<ProductRepository> logger)
         {
             _productClient = productClient;
+            _logger = logger;
         }
         public async Task<PagedResult<Models.Product>> GetAllProducts(int? pageIndex, int? pageSize)
         {
@@ -32,6 +35,7 @@ namespace Registry.Repository
             }
             catch (Exception ex)
             {
+                _logger.LogError("Server Error in GetAllProducts().", ex);
                 throw ex;
             }
         }
@@ -50,6 +54,7 @@ namespace Registry.Repository
             }
             catch (Exception ex)
             {
+                _logger.LogError("Server Error in GetProductsByIds().", ex);
                 throw ex;
             }
         }
@@ -69,6 +74,7 @@ namespace Registry.Repository
             }
             catch (Exception ex)
             {
+                _logger.LogError("Server Error in SearchProducts().", ex);
                 throw ex;
             }
         }

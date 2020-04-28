@@ -13,8 +13,6 @@ namespace Registry.Repository
     {
         private readonly ILogger<RegistryRepository> _logger;
         private readonly RegistryContext _registryDbContext;
-        private const int defaultPageIndex = 1;
-        private const int defaultPageSize = 5;
         public RegistryRepository(RegistryContext dbContext, ILogger<RegistryRepository> logger)
         {
             _registryDbContext = dbContext;
@@ -47,6 +45,7 @@ namespace Registry.Repository
             }
             catch (Exception ex)
             {
+                _logger.LogError("Server Error in GetRegistryForUser().", ex);
                 throw ex;
             }
         }

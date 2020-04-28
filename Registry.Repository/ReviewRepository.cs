@@ -1,4 +1,5 @@
-﻿using Registry.Models;
+﻿using Microsoft.Extensions.Logging;
+using Registry.Models;
 using Registry.Repository.Extensions;
 using System;
 using System.Collections.Generic;
@@ -12,9 +13,11 @@ namespace Registry.Repository
     public class ReviewRepository : IReviewRepository
     {
         private readonly ReviewClient _reviewClient;
-        public ReviewRepository(ReviewClient reviewClient)
+        private readonly ILogger<RegistryRepository> _logger;
+        public ReviewRepository(ReviewClient reviewClient, ILogger<RegistryRepository> logger)
         {
             _reviewClient = reviewClient;
+            _logger = logger;
         }
         public async Task<PagedResult<Review>> GetReviewsForProduct(int productId, int? pageIndex, int? pageSize)
         {
@@ -31,6 +34,7 @@ namespace Registry.Repository
             }
             catch (Exception ex)
             {
+                _logger.LogError("Server Error in GetReviewsForProduct().", ex);
                 throw ex;
             }
         }
