@@ -45,6 +45,7 @@ namespace Registry.UI.Components
         public int Count { get; set; }
         public bool PopupVisible { get; set; } = false;
         public PagedResult<Models.Review> PagedReviews { get; set; }
+        public bool ShowReviewsLoader { get; set; } = false;
 
         protected override async Task OnInitializedAsync()
         {
@@ -131,6 +132,7 @@ namespace Registry.UI.Components
 
         public async Task OnRowExpanded(Models.ProductAggregate product)
         {
+            ShowReviewsLoader = true;
             PagedReviews = new PagedResult<Models.Review>();
             try
             {
@@ -139,6 +141,7 @@ namespace Registry.UI.Components
                 PagedReviews.PageIndex = result.PageIndex;
                 PagedReviews.TotalCount = result.TotalCount;
                 PagedReviews.TotalPages = result.TotalPages;
+                ShowReviewsLoader = false;
             }
             catch (Exception ex)
             {

@@ -50,9 +50,13 @@
                             </RadzenGridColumn>
                         </Columns>
                         <Template>
-                            @if (@PagedReviews?.Data.Count() == 0)
+                            @if (ShowReviewsLoader)
                             {
                                 <div>Loading...</div>
+                            }
+                            @if(!ShowReviewsLoader && PagedReviews.TotalCount == 0)
+                            {
+                                <div>No records to display.</div>
                             }
 
                             <RadzenDataList AllowPaging="true" PageSize="@InitialReviewPageSize" Data="@PagedReviews?.Data" Count="PagedReviews.TotalCount" TItem="Review">
