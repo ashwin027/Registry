@@ -1,8 +1,4 @@
-﻿using DevExpress.Blazor;
-using DevExpress.Blazor.Internal;
-using DevExtreme.AspNet.Data;
-using DevExtreme.AspNet.Data.ResponseModel;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Radzen;
 using Registry.Models;

@@ -243,3 +243,8 @@ app {
 .product-search{
     z-index: 2;
 }
+
+.dialog-ok {
+    margin-bottom: 10px;
+    width: 150px;
+}

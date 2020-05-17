@@ -1,47 +1,34 @@
 ﻿@page "/"
 @inherits IndexBase
 @using Registry.UI.Components
+@using Registry.Models 
 
 <h3>Welcome to my gift registry!</h3>
 
-<DxButton RenderStyle="ButtonRenderStyle.Primary" CssClass="search-button" Click="@Search" IconCssClass="fas fa-search right-space" Text="Search Products">
-</DxButton>
-<DxDataGrid Data="@Products"
-            @ref="_gridRef"
-            SelectionMode="DataGridSelectionMode.None"
-            PageSize="5"
-            ShowFilterRow="false"
-            style="width:100%">
-    <DxDataGridColumn Field="@nameof(Models.ProductAggregate.Id)">
-    </DxDataGridColumn>
-    <DxDataGridColumn Field="@nameof(Models.ProductAggregate.Name)">
-    </DxDataGridColumn>
-    <DxDataGridColumn Field="@nameof(Models.ProductAggregate.Description)">
-    </DxDataGridColumn>
-    <DxDataGridColumn Field="@nameof(Models.ProductAggregate.Quantity)">
-        <DisplayTemplate>
-            @{
-                var cxt = (context as Models.ProductAggregate);
-                <DxSpinEdit @bind-Value="@cxt.Quantity" MinValue="0"></DxSpinEdit>
-            }
-        </DisplayTemplate>
-    </DxDataGridColumn>
-    <DxDataGridColumn Caption="Actions">
-        <DisplayTemplate>
-            <RegistryActions ProductAggregate="@(context as Models.ProductAggregate)"
-                             UserId="@UserId"
-                             OnUpdated="@RefreshData"
-                             OnValidationError="@ShowValidationError">
-            </RegistryActions>
-        </DisplayTemplate>
-    </DxDataGridColumn>
-</DxDataGrid>
+<RadzenButton Click="@Search" class="search-button" Icon="search" Text="Search Products">
+</RadzenButton>
+<RadzenGrid AllowPaging="true"
+            PageSize="@InitialProductPageSize"
+            Data="@Products"
+            TItem="ProductAggregate">
+    <Columns>
+        <RadzenGridColumn TItem="ProductAggregate" Property="@nameof(Models.ProductAggregate.Id)" Title="ID" />
+        <RadzenGridColumn TItem="ProductAggregate" Property="@nameof(Models.ProductAggregate.Name)" Title="Name" />
+        <RadzenGridColumn TItem="ProductAggregate" Property="@nameof(Models.ProductAggregate.Description)" Title="Description" />
+        <RadzenGridColumn TItem="ProductAggregate" Property="@nameof(Models.ProductAggregate.Quantity)" Title="Quantity">
+            <Template Context="data">
+                <RadzenNumeric TItem="int" @bind-Value="data.Quantity" Min="1" />
+            </Template>
+        </RadzenGridColumn>
+        <RadzenGridColumn TItem="ProductAggregate" Type="string" Title="Actions">
+            <Template Context="data">
+                <RegistryActions ProductAggregate="data"
+                                 UserId="@UserId"
+                                 OnUpdated="@RefreshData"
+                                 OnValidationError="@ShowValidationError">
+                </RegistryActions>
+            </Template>
+        </RadzenGridColumn>
+    </Columns>
+</RadzenGrid>
 <ProductSearchDialog @ref="ProductSearchDialog" CloseEventCallBack="@SearchProductsDialog_OnDialogClose"></ProductSearchDialog>
-<DxPopup HeaderText="Error"
-         @bind-Visible="@PopupVisible">
-    <Content>
-        <p>
-            Quantity has to be greater than 0.
-        </p>
-    </Content>
-</DxPopup>

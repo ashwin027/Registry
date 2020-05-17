@@ -36,7 +36,7 @@
                             <RadzenGridColumn TItem="ProductAggregate" Property="@nameof(Models.ProductAggregate.Description)" Title="Description" />
                             <RadzenGridColumn TItem="ProductAggregate" Property="@nameof(Models.ProductAggregate.Quantity)" Title="Quantity">
                                 <Template Context="data">
-                                    <RadzenNumeric TItem="int" @bind-Value="data.Quantity" Min="0" />
+                                    <RadzenNumeric TItem="int" @bind-Value="data.Quantity" Min="1" />
                                 </Template>
                             </RadzenGridColumn>
                             <RadzenGridColumn TItem="ProductAggregate" Type="string" Title="Actions">

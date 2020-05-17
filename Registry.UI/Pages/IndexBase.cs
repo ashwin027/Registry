@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DevExpress.Blazor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Radzen;
 using Registry.Models;
 using Registry.Repository;
 using Registry.UI.Components;
@@ -12,7 +12,7 @@ using Registry.UI.Extensions;
 
 namespace Registry.UI.Pages
 {
-    public class IndexBase: ComponentBase
+    public class IndexBase : ComponentBase
     {
         [Inject]
         public IRegistryRepository RegistryRepository { get; set; }
@@ -20,7 +20,8 @@ namespace Registry.UI.Pages
         [Inject]
         public IProductRepository ProductRepository { get; set; }
 
-        public DxDataGrid<ProductAggregate> _gridRef { get; set; }
+        [Inject]
+        public DialogService DialogService { get; set; }
 
         protected ProductSearchDialog ProductSearchDialog { get; set; }
 
@@ -28,8 +29,8 @@ namespace Registry.UI.Pages
 
         public List<RegistryRecord> RegistryRecords { get; set; } = new List<RegistryRecord>();
         public bool IsEmptyRegistry { get; set; }
-
         public bool PopupVisible { get; set; } = false;
+        public const int InitialProductPageSize = 3;
 
         // TODO: Create a user table after implementing basic auth
         public const int UserId = 1;
@@ -52,6 +53,9 @@ namespace Registry.UI.Pages
         }
         public void ShowValidationError()
         {
+            DialogService.Open<SimpleDialog>("Error",
+                new Dictionary<string, object>() { { "Message", "Quantity has to be greater than 0." } },
+                new DialogOptions() { });
             PopupVisible = true;
             StateHasChanged();
         }
