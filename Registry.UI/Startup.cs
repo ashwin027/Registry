@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Radzen;
 using Registry.Models;
 using Registry.Repository;
 using static ProductCatalog.Grpc.Product;
@@ -42,6 +43,7 @@ namespace Registry.UI
                 o.Address = new Uri(config.ReviewEndpoint);
             });
 
+            services.AddScoped<DialogService>();
             services.AddDbContext<RegistryContext>();
             services.AddScoped<IRegistryRepository, RegistryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();

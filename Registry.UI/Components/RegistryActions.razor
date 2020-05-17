@@ -3,21 +3,19 @@
 <div class="as-flex">
     @{
         <div>
-            <DxButton RenderStyle="ButtonRenderStyle.None"
-                      Title="@(ProductAggregate.IsAdded ? "Remove" : "Add")"
-                      Click="(args) => { AddOrRemove(ProductAggregate); }"
-                      IconCssClass="@(ProductAggregate.IsAdded ? "fas fa-minus-circle" : "fas fa-plus-circle")">
-            </DxButton>
+            <RadzenButton class="action-button" Title="@(ProductAggregate.IsAdded ? "Remove" : "Add")"
+                          Click="(args) => { AddOrRemove(ProductAggregate); }"
+                          Icon="@(ProductAggregate.IsAdded ? "remove_circle" : "add_circle")">
+            </RadzenButton>
         </div>
         if (ProductAggregate.IsAdded)
         {
             <div>
-                <DxButton RenderStyle="ButtonRenderStyle.None"
-                          Title="Update"
-                          Enabled="@((ProductAggregate.Quantity!=null && ProductAggregate.Quantity>0) ? true : false)"
-                          Click="(args) => { Update(ProductAggregate); }"
-                          IconCssClass="fas fa-save">
-                </DxButton>
+                <RadzenButton class="action-button" Disabled="@(ProductAggregate?.Quantity==0)"
+                              Title="Update"
+                              Click="(args) => { Update(ProductAggregate); }"
+                              Icon="save">
+                </RadzenButton>
             </div>
         }
     }

@@ -3,7 +3,7 @@
 
 @if (ShowDialog)
 {
-    <div class="modal fade show d-block" tabindex="-1" role="dialog">
+    <div class="modal fade show d-block product-search" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -19,8 +19,8 @@
                                            Placeholder="Search products" class="search-text" />
                         </div>
                         <div class="search-button-container">
-                            <DxButton RenderStyle="ButtonRenderStyle.Primary" CssClass="search-button" Click="@Search" IconCssClass="fas fa-search right-space">
-                            </DxButton>
+                            <RadzenButton Click="@Search" class="search-button" Icon="search">
+                            </RadzenButton>
                         </div>
                     </div>
                     <RadzenGrid AllowPaging="true"
@@ -78,13 +78,4 @@
             </div>
         </div>
     </div>
-    <div class="target-container" @onclick="@(() => PopupVisible = true)"></div>
-    <DxPopup HeaderText="Error"
-             @bind-Visible="@PopupVisible">
-        <Content>
-            <p>
-                Quantity has to be greater than 0.
-            </p>
-        </Content>
-    </DxPopup>
 }

@@ -27,9 +27,12 @@ namespace Registry.UI.Components
         [Inject]
         public IRegistryRepository RegistryRepository { get; set; }
 
+        [Inject]
+        public DialogService DialogService { get; set; }
+
         [Parameter]
         public EventCallback<bool> CloseEventCallBack { get; set; }
-        public bool ShowDialog { get; set; }
+        public bool ShowDialog { get; set; } = false;
         public string SearchText { get; set; }
         public const int InitialProductPageSize = 3;
         public const int InitialReviewPageSize = 3;
@@ -46,15 +49,6 @@ namespace Registry.UI.Components
         public bool PopupVisible { get; set; } = false;
         public PagedResult<Models.Review> PagedReviews { get; set; }
         public bool ShowReviewsLoader { get; set; } = false;
-
-        protected override async Task OnInitializedAsync()
-        {
-            await LoadProducts(new LoadDataArgs()
-            {
-                Skip = 0,
-                Top = InitialProductPageSize
-            });
-        }
         public async Task LoadProducts(LoadDataArgs args)
         {
             try
@@ -90,10 +84,11 @@ namespace Registry.UI.Components
                 throw ex;
             }
         }
-        public void Show()
+        public async void Show()
         {
             ResetDialog();
             ShowDialog = true;
+            await LoadProducts(new LoadDataArgs() { Skip = 0, Top = InitialProductPageSize });
             StateHasChanged();
         }
 
@@ -118,6 +113,9 @@ namespace Registry.UI.Components
 
         public void ShowValidationError()
         {
+            DialogService.Open<SimpleDialog>("Error", 
+                new Dictionary<string, object>() { { "Message", "Quantity has to be greater than 0." } }, 
+                new DialogOptions() { });
             PopupVisible = true;
             StateHasChanged();
         }

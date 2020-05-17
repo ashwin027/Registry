@@ -228,3 +228,18 @@ app {
 .review-date{
     font-size: small;
 }
+
+.action-button{
+    background: transparent !important;
+    color: black !important;
+    background-color: transparent !important;
+}
+
+.center-contents{
+    display: flex;
+    justify-content: center;
+}
+
+.product-search{
+    z-index: 2;
+}
