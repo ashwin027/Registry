@@ -4,6 +4,7 @@ using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Data.ResponseModel;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Radzen;
 using Registry.Models;
 using Registry.Repository;
 using Registry.UI.Extensions;
@@ -34,22 +35,32 @@ namespace Registry.UI.Components
         public const int InitialReviewPageSize = 3;
         public int currentPageIndex { get; set; }
         public int currentPageSize { get; set; }
-        public DxDataGrid<ProductAggregate> _gridRef { get; set; }
         public string IconClass { get; set; } = "fas fa-plus-circle";
 
         public bool UserHasUpdated { get; set; } = false;
 
         // TODO: Add user table after implementing auth
         public const int UserId = 1;
-
+        public List<ProductAggregate> Products { get; set; } = new List<ProductAggregate>();
+        public int Count { get; set; }
         public bool PopupVisible { get; set; } = false;
-        public async Task<LoadResult> LoadProducts(DataSourceLoadOptionsBase options, CancellationToken cancellationToken)
+        public PagedResult<Models.Review> PagedReviews { get; set; }
+
+        protected override async Task OnInitializedAsync()
+        {
+            await LoadProducts(new LoadDataArgs()
+            {
+                Skip = 0,
+                Top = InitialProductPageSize
+            });
+        }
+        public async Task LoadProducts(LoadDataArgs args)
         {
             try
             {
-                var result = new LoadResult();
-                currentPageIndex = (options.Skip / options.Take) + 1;
-                currentPageSize = options.Take;
+                var skip = args.Skip.GetValueOrDefault();
+                currentPageIndex = (args.Skip.GetValueOrDefault() / args.Top.GetValueOrDefault()) + 1;
+                currentPageSize = args.Top.GetValueOrDefault();
                 PagedResult<Models.Product> pagedResult;
                 if (!string.IsNullOrWhiteSpace(SearchText))
                 {
@@ -60,38 +71,24 @@ namespace Registry.UI.Components
                     pagedResult = await ProductRepository.GetAllProducts(currentPageIndex, currentPageSize);
                 }
 
-                result.totalCount = pagedResult.TotalCount;
                 var registryForUser = await RegistryRepository.GetRegistryForUser(UserId);
                 if (registryForUser != null && registryForUser.Count > 0)
                 {
-                    result.data = pagedResult.Data.Select(p => p.ToAggregate(registryForUser.FirstOrDefault(r => r.ProductId == p.Id), registryForUser.Any(r => r.ProductId == p.Id)));
+                    Products = pagedResult.Data.Select(p => p.ToAggregate(registryForUser.FirstOrDefault(r => r.ProductId == p.Id), registryForUser.Any(r => r.ProductId == p.Id))).ToList();
                 }
                 else
                 {
-                    result.data = pagedResult.Data.Select(p => p.ToAggregate(null, false));
+                    Products = pagedResult.Data.Select(p => p.ToAggregate(null, false)).ToList();
                 }
 
-                return result;
+                Count = pagedResult.TotalCount;
+                StateHasChanged();
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
-
-        //public async void Update(Models.ProductAggregate product)
-        //{
-        //    try
-        //    {
-        //        var result = Task.Run(() => { return RegistryRepository.UpdateRegistry(new RegistryRecord() { UserId = userId, Quantity = product.Quantity, ProductId = product.Id, Id = product.RegistryId??0 }); }).Result;
-        //        await _gridRef.Refresh();
-        //        StateHasChanged();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
         public void Show()
         {
             ResetDialog();
@@ -115,7 +112,7 @@ namespace Registry.UI.Components
 
         public async void Search(MouseEventArgs args)
         {
-            await _gridRef.Refresh();
+            await LoadProducts(new LoadDataArgs() { Skip = 0, Top = InitialProductPageSize });
         }
 
         public void ShowValidationError()
@@ -128,54 +125,25 @@ namespace Registry.UI.Components
         {
             PopupVisible = false;
             UserHasUpdated = true;
-            await _gridRef.Refresh();
+            await LoadProducts(new LoadDataArgs() { Skip = 0, Top = InitialProductPageSize });
             StateHasChanged();
         }
 
-        //public async void AddOrRemove(Models.ProductAggregate product)
-        //{
-        //    if (product.Quantity != null && product.Quantity > 0)
-        //    {
-        //        PopupVisible = false;
-        //        UserHasUpdated = true;
-        //        if (product.IsAdded)
-        //        {
-        //            await RegistryRepository.RemoveFromRegistry(product.RegistryId);
-        //        }
-        //        else
-        //        {
-        //            await RegistryRepository.AddToRegistry(new RegistryRecord() { ProductId = product.Id, Quantity = product.Quantity, UserId = 1 });
-        //        }
-        //        await _gridRef.Refresh();
-        //        StateHasChanged();
-        //    }
-        //    else
-        //    {
-        //        PopupVisible = true;
-        //        StateHasChanged();
-        //    }
-        //}
-
-        public PagedResult<Models.Review> OnRowExpanded(Models.ProductAggregate product)
+        public async Task OnRowExpanded(Models.ProductAggregate product)
         {
-            var pagedResults = new PagedResult<Models.Review>();
+            PagedReviews = new PagedResult<Models.Review>();
             try
             {
-                if (_gridRef.DetailRows.IsRowExpanded(product))
-                {
-                    var result = Task.Run(() => { return ReviewRepository.GetReviewsForProduct(product.Id, 1, InitialReviewPageSize); }).Result;
-                    pagedResults.Data = result.Data;
-                    pagedResults.PageIndex = result.PageIndex;
-                    pagedResults.TotalCount = result.TotalCount;
-                    pagedResults.TotalPages = result.TotalPages;
-                }
+                var result = await ReviewRepository.GetReviewsForProduct(product.Id, 1, InitialReviewPageSize);
+                PagedReviews.Data = result.Data;
+                PagedReviews.PageIndex = result.PageIndex;
+                PagedReviews.TotalCount = result.TotalCount;
+                PagedReviews.TotalPages = result.TotalPages;
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-
-            return pagedResults;
         }
     }
 }

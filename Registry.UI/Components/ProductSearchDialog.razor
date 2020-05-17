@@ -1,4 +1,5 @@
 ﻿@inherits ProductSearchDialogBase
+@using Registry.Models
 
 @if (ShowDialog)
 {
@@ -14,85 +15,61 @@
                 <div class="modal-body">
                     <div class="as-flex">
                         <div class="occupy-all-flex">
-                            <DxTextBox @bind-Text="@SearchText"
-                                       NullText="Search products"
-                                       CssClass="search-text"
-                                       ClearButtonDisplayMode="@DataEditorClearButtonDisplayMode.Auto"></DxTextBox>
+                            <RadzenTextBox @bind-Value="@SearchText" 
+                                           Placeholder="Search products" class="search-text" />
                         </div>
                         <div class="search-button-container">
                             <DxButton RenderStyle="ButtonRenderStyle.Primary" CssClass="search-button" Click="@Search" IconCssClass="fas fa-search right-space">
                             </DxButton>
                         </div>
                     </div>
-                    <DxDataGrid T="@Models.ProductAggregate"
-                                CustomData="@LoadProducts"
-                                @ref="_gridRef"
+                    <RadzenGrid AllowPaging="true"
                                 PageSize="@InitialProductPageSize"
-                                ShowFilterRow="false"
-                                ShowPager="true"
-                                AutoCollapseDetailRow="true"
-                                ShowDetailRow="true"
-                                SelectionMode="DataGridSelectionMode.None"
-                                PagerPageSizeSelectorVisible="true"
-                                PagerAllowedPageSizes=@(new int[] {5,10,20,40})
-                                PagerNavigationMode=PagerNavigationMode.InputBox
-                                style="width:100%">
+                                Data="Products"
+                                Count="Count"
+                                LoadData="@LoadProducts"
+                                RowExpand="@OnRowExpanded"
+                                TItem="ProductAggregate">
                         <Columns>
-                            <DxDataGridColumn Field="@nameof(Models.ProductAggregate.Id)">
-                            </DxDataGridColumn>
-                            <DxDataGridColumn Field="@nameof(Models.ProductAggregate.Name)">
-                            </DxDataGridColumn>
-                            <DxDataGridColumn Field="@nameof(Models.ProductAggregate.Description)">
-                            </DxDataGridColumn>
-                            <DxDataGridColumn Field="@nameof(Models.ProductAggregate.Quantity)">
-                                <DisplayTemplate>
-                                    @{
-                                        var cxt = (context as Models.ProductAggregate);
-                                        <DxSpinEdit @bind-Value="@cxt.Quantity" MinValue="0"></DxSpinEdit>
-                                    }
-                                </DisplayTemplate>
-                            </DxDataGridColumn>
-                            <DxDataGridColumn Caption="Actions">
-                                <DisplayTemplate>
-                                    <RegistryActions 
-                                                     ProductAggregate="@(context as Models.ProductAggregate)" 
+                            <RadzenGridColumn TItem="ProductAggregate" Property="@nameof(Models.ProductAggregate.Id)" Title="ID" />
+                            <RadzenGridColumn TItem="ProductAggregate" Property="@nameof(Models.ProductAggregate.Name)" Title="Name" />
+                            <RadzenGridColumn TItem="ProductAggregate" Property="@nameof(Models.ProductAggregate.Description)" Title="Description" />
+                            <RadzenGridColumn TItem="ProductAggregate" Property="@nameof(Models.ProductAggregate.Quantity)" Title="Quantity">
+                                <Template Context="data">
+                                    <RadzenNumeric TItem="int" @bind-Value="data.Quantity" Min="0" />
+                                </Template>
+                            </RadzenGridColumn>
+                            <RadzenGridColumn TItem="ProductAggregate" Type="string" Title="Actions">
+                                <Template Context="data">
+                                    <RegistryActions ProductAggregate="data"
                                                      UserId="@UserId"
-                                                     OnUpdated="@RefreshData" 
+                                                     OnUpdated="@RefreshData"
                                                      OnValidationError="@ShowValidationError">
                                     </RegistryActions>
-                                </DisplayTemplate>
-                            </DxDataGridColumn>
+                                </Template>
+                            </RadzenGridColumn>
                         </Columns>
-                        <DetailRowTemplate>
-                            <DxTabs>
-                                <DxTabPage Text="Reviews">
-                                    @{
-                                        var reviews = OnRowExpanded(context);
-                                    }
+                        <Template>
+                            @if (@PagedReviews?.Data.Count() == 0)
+                            {
+                                <div>Loading...</div>
+                            }
 
-                                    @foreach (var review in reviews?.Data)
-                                    {
-                                        <div class="card border-light mb-3 review-title-container">
-                                            <div class="card-header">
-                                                <div class="as-flex">
-                                                    <div class="occupy-all-flex review-title">@review?.Title</div>
-                                                    <div class="review-date">Submitted on @review?.SubmitDate.ToString("dd/MMM/yyyy")</div>
-                                                </div>
-                                            </div>
-                                            <div class="card-body">
-                                                <p class="card-text">@review?.Description</p>
-                                            </div>
+                            <RadzenDataList AllowPaging="true" PageSize="@InitialReviewPageSize" Data="@PagedReviews?.Data" Count="PagedReviews.TotalCount" TItem="Review">
+                                <Template Context="review">
+                                    <div>
+                                        <div class="as-flex">
+                                            <div class="occupy-all-flex review-title">@review?.Title</div>
+                                            <div class="review-date">Submitted on @review?.SubmitDate.ToString("dd/MMM/yyyy")</div>
                                         </div>
-                                    }
-                                    <DxPager PageCount="reviews.TotalPages"
-                                             ActivePageIndex="reviews.PageIndex - 1"
-                                             NavigationMode="PagerNavigationMode.InputBox">
-                                    </DxPager>
-                                </DxTabPage>
-                            </DxTabs>
-                        </DetailRowTemplate>
-                    </DxDataGrid>
-
+                                        <div>
+                                            <p class="card-text">@review?.Description</p>
+                                        </div>
+                                    </div>
+                                </Template>
+                            </RadzenDataList>
+                        </Template>
+                    </RadzenGrid>
                 </div>
             </div>
         </div>

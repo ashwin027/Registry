@@ -192,6 +192,7 @@ app {
 
 .search-text{
     margin-bottom: 5px;
+    width: 100%;
 }
 
 .search-container {
