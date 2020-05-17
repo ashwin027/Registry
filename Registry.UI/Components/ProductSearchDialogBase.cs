@@ -34,16 +34,13 @@ namespace Registry.UI.Components
         public const int InitialReviewPageSize = 3;
         public int currentPageIndex { get; set; }
         public int currentPageSize { get; set; }
-        public string IconClass { get; set; } = "fas fa-plus-circle";
-
         public bool UserHasUpdated { get; set; } = false;
 
         // TODO: Add user table after implementing auth
         public const int UserId = 1;
         public List<ProductAggregate> Products { get; set; } = new List<ProductAggregate>();
         public int Count { get; set; }
-        public bool PopupVisible { get; set; } = false;
-        public PagedResult<Models.Review> PagedReviews { get; set; }
+        public PagedResult<Review> PagedReviews { get; set; }
         public bool ShowReviewsLoader { get; set; } = false;
         public async Task LoadProducts(LoadDataArgs args)
         {
@@ -52,7 +49,7 @@ namespace Registry.UI.Components
                 var skip = args.Skip.GetValueOrDefault();
                 currentPageIndex = (args.Skip.GetValueOrDefault() / args.Top.GetValueOrDefault()) + 1;
                 currentPageSize = args.Top.GetValueOrDefault();
-                PagedResult<Models.Product> pagedResult;
+                PagedResult<Product> pagedResult;
                 if (!string.IsNullOrWhiteSpace(SearchText))
                 {
                     pagedResult = await ProductRepository.SearchProducts(SearchText, currentPageIndex, currentPageSize);
@@ -110,24 +107,22 @@ namespace Registry.UI.Components
         public void ShowValidationError()
         {
             DialogService.Open<SimpleDialog>("Error", 
-                new Dictionary<string, object>() { { "Message", "Quantity has to be greater than 0." } }, 
+                new Dictionary<string, object>() { { "Message", Constants.QuantityInvalidError } }, 
                 new DialogOptions() { });
-            PopupVisible = true;
             StateHasChanged();
         }
 
         public async void RefreshData()
         {
-            PopupVisible = false;
             UserHasUpdated = true;
             await LoadProducts(new LoadDataArgs() { Skip = 0, Top = InitialProductPageSize });
             StateHasChanged();
         }
 
-        public async Task OnRowExpanded(Models.ProductAggregate product)
+        public async Task OnRowExpanded(ProductAggregate product)
         {
             ShowReviewsLoader = true;
-            PagedReviews = new PagedResult<Models.Review>();
+            PagedReviews = new PagedResult<Review>();
             try
             {
                 var result = await ReviewRepository.GetReviewsForProduct(product.Id, 1, InitialReviewPageSize);

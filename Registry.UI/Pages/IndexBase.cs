@@ -29,7 +29,6 @@ namespace Registry.UI.Pages
 
         public List<RegistryRecord> RegistryRecords { get; set; } = new List<RegistryRecord>();
         public bool IsEmptyRegistry { get; set; }
-        public bool PopupVisible { get; set; } = false;
         public const int InitialProductPageSize = 3;
 
         // TODO: Create a user table after implementing basic auth
@@ -54,15 +53,13 @@ namespace Registry.UI.Pages
         public void ShowValidationError()
         {
             DialogService.Open<SimpleDialog>("Error",
-                new Dictionary<string, object>() { { "Message", "Quantity has to be greater than 0." } },
+                new Dictionary<string, object>() { { "Message", Constants.QuantityInvalidError } },
                 new DialogOptions() { });
-            PopupVisible = true;
             StateHasChanged();
         }
 
         public async void RefreshData()
         {
-            PopupVisible = false;
             await LoadData();
             StateHasChanged();
         }
