@@ -10,14 +10,13 @@ This is an example project used to demonstrate the microservices pattern. There 
 The application has been built with,
 
 * .Net core 3.1
-* Blazor (Devexpress for controls)
+* Blazor
 * EF Core 3.1
 * Grpc
 
 ### Running the project
 #### Pre-reqs
 -  [.Net core SDK 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1)
-- [Dev express (Request a free feed URL)](https://nuget.devexpress.com/)
 - LocalDB through the Visual Studio Installer or from [here](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver15).
 
 #### Migrations
