@@ -1,3 +1,6 @@
+Write-Host "Creating product catalog."
 dotnet ef database update  --startup-project "ProductCatalog.Api"
+Write-Host "Creating reviews."
 dotnet ef database update  --startup-project "Reviews.Api"
+Write-Host "Creating Registry."
 dotnet ef database update  --startup-project "Registry.UI"
