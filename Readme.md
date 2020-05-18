@@ -18,6 +18,7 @@ The application has been built with,
 #### Pre-reqs
 -  [.Net core SDK 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 - LocalDB through the Visual Studio Installer or from [here](https://docs.microsoft.com/en-us/sql/database-engine/configure-windows/sql-server-express-localdb?view=sql-server-ver15).
+- Powershell
 
 #### Migrations
 To create the database and seed data, run the following commands from a command prompt window,
@@ -26,17 +27,7 @@ First we need to install the dotnet ef core tools package (remember to restart p
 
 `dotnet tool install --global dotnet-ef`
 
-Navigate to the `ProductCatalog.Repositories` folder through powershell/command prompt and run the following commands to create the product catalog database and data,
-
-`dotnet ef database update  --startup-project "..\ProductCatalog.Api"`
-
-Navigate to the `Reviews.Repository` folder and run the following commands to create the reviews database and data,
-
-`dotnet ef database update  --startup-project "..\Reviews.Api"`
-
-Navigate to the `Registry.Repository` folder and run the following commands to create the registry database,
-
-`dotnet ef database update  --startup-project "..\Registry.UI"`
+Navigate to the root folder through powershell and execute the `SetupDb.ps1` powershell script which sets up all the DBs and sample data.
 
 #### Running the application
 After the DBs and the seed data is created, build and run the projects `ProductCatalog.Grpc`, `Reviews.Grpc` and `Registry.UI`.
