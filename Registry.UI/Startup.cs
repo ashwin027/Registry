@@ -14,6 +14,10 @@ using Registry.Models;
 using Registry.Repository;
 using static ProductCatalog.Grpc.Product;
 using static Reviews.Grpc.Review;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace Registry.UI
 {
@@ -49,6 +53,33 @@ namespace Registry.UI
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
 
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = "Cookies";
+                options.DefaultChallengeScheme = "oidc";
+            })
+            .AddCookie()
+            .AddOpenIdConnect("oidc", options =>
+            {
+                options.Authority = Configuration["oidc:authority"];
+                options.ClientId = Configuration["oidc:clientid"];
+                options.ClientSecret = Configuration["oidc:clientsecret"];
+                options.ResponseType = Configuration["oidc:responsetype"];
+                options.SaveTokens = true;
+                options.GetClaimsFromUserInfoEndpoint = true;
+                options.RequireHttpsMetadata = true;
+                options.SignInScheme = "Cookies";
+            });
+
+            // Redirect to identity server login
+            services.AddMvcCore(options =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+            });
+
             services.AddRazorPages();
             services.AddServerSideBlazor();
         }
@@ -65,9 +96,13 @@ namespace Registry.UI
                 app.UseExceptionHandler("/Error");
             }
 
+            app.UseAuthentication();
+
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

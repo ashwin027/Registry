@@ -7,7 +7,9 @@
 
 <div class="main">
     <div class="top-row px-4">
-        <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        <AuthorizeView>
+            <a href="/logout?returnUrl=/">Log out</a>
+        </AuthorizeView>
     </div>
 
     <div class="content px-4">
