@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf.Collections;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using ProductCatalog.Grpc.Extensions;
 using ProductCatalog.Repository;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace ProductCatalog.Grpc.Services
 {
+    [Authorize]
     public class ProductService: Product.ProductBase
     {
         private readonly ILogger<ProductService> _logger;

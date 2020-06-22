@@ -1,5 +1,6 @@
 ﻿@page "/"
 @namespace Registry.UI.Pages
+@model HostAuthenticationModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
     Layout = null;
@@ -18,7 +19,7 @@
 </head>
 <body>
     <app>
-        <component type="typeof(App)" render-mode="ServerPrerendered" />
+        <component type="typeof(App)" render-mode="ServerPrerendered" param-AccessToken="Model.AccessToken"/>
     </app>
 
     <div id="blazor-error-ui">

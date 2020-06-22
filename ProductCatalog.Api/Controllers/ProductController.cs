@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ProductCatalog.Common.Models;
 using ProductCatalog.Models.Entities;
@@ -12,6 +13,7 @@ namespace ProductCatalog.Api.Controllers
 {
     [ApiController()]
     [Route("api/[controller]")]
+    [Authorize]
     public class ProductController: ControllerBase
     {
         private readonly ILogger<ProductController> _logger;

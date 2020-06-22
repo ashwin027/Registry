@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Registry.UI
 {
@@ -55,21 +56,28 @@ namespace Registry.UI
 
             services.AddAuthentication(options =>
             {
-                options.DefaultScheme = "Cookies";
-                options.DefaultChallengeScheme = "oidc";
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
             })
             .AddCookie()
-            .AddOpenIdConnect("oidc", options =>
+            .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
             {
                 options.Authority = Configuration["oidc:authority"];
                 options.ClientId = Configuration["oidc:clientid"];
                 options.ClientSecret = Configuration["oidc:clientsecret"];
                 options.ResponseType = Configuration["oidc:responsetype"];
+                foreach (var scope in Configuration["oidc:scope"].Split(","))
+                {
+                    options.Scope.Add(scope.Trim());
+                }
                 options.SaveTokens = true;
                 options.GetClaimsFromUserInfoEndpoint = true;
                 options.RequireHttpsMetadata = true;
-                options.SignInScheme = "Cookies";
+                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             });
+
+            // Adding http client to get the access token
+            services.AddHttpClient();
 
             // Redirect to identity server login
             services.AddMvcCore(options =>
@@ -96,13 +104,12 @@ namespace Registry.UI
                 app.UseExceptionHandler("/Error");
             }
 
-            app.UseAuthentication();
-
             app.UseStaticFiles();
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthentication();
+            // app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

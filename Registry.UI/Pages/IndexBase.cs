@@ -24,10 +24,6 @@ namespace Registry.UI.Pages
 
         [Inject]
         public DialogService DialogService { get; set; }
-
-        [Inject]
-        private AuthenticationStateProvider authprovider { get; set;  }
-
         protected ProductSearchDialog ProductSearchDialog { get; set; }
 
         public List<ProductAggregate> Products { get; set; } = new List<ProductAggregate>();
@@ -42,8 +38,6 @@ namespace Registry.UI.Pages
         protected override async Task OnInitializedAsync()
         {
             await LoadData();
-            var authState = await authprovider.GetAuthenticationStateAsync();
-            var user = authState.User;
         }
 
         private async Task LoadData()
