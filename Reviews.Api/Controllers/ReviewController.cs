@@ -9,11 +9,15 @@ using System.Threading.Tasks;
 using static ProductCatalog.Grpc.Product;
 using ProductCatalog.Grpc;
 using Reviews.Models;
+using Microsoft.AspNetCore.Authorization;
+using Grpc.Core;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Reviews.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ReviewController: ControllerBase
     {
         private readonly ILogger<ReviewController> _logger;
@@ -82,7 +86,10 @@ namespace Reviews.Api.Controllers
                     return BadRequest("Request is null");
                 }
 
-                var product = _productClient.GetProduct(new ProductRequest() { ProductId = review.ProductId });
+                var token = await HttpContext.GetTokenAsync(Constants.AccessTokenClaimType);
+                var headers = new Metadata();
+                headers.Add("Authorization", $"Bearer {token}");
+                var product = _productClient.GetProduct(new ProductRequest() { ProductId = review.ProductId }, headers);
                 if (product == null)
                 {
                     _logger.LogError($"Bad request in ReviewController, method: CreateReview(). Product with id {review.ProductId} does not exist.");
@@ -117,7 +124,10 @@ namespace Reviews.Api.Controllers
                     return BadRequest();
                 }
 
-                var product = _productClient.GetProduct(new ProductRequest() { ProductId = review.ProductId });
+                var token = await HttpContext.GetTokenAsync(Constants.AccessTokenClaimType);
+                var headers = new Metadata();
+                headers.Add("Authorization", $"Bearer {token}");
+                var product = _productClient.GetProduct(new ProductRequest() { ProductId = review.ProductId }, headers);
                 if (product == null)
                 {
                     _logger.LogError($"Bad request in ReviewController, method: UpdateReview(). Product with id {review.ProductId} does not exist.");
@@ -169,7 +179,10 @@ namespace Reviews.Api.Controllers
         {
             try
             {
-                var product = _productClient.GetProduct(new ProductRequest() { ProductId = productId });
+                var token = await HttpContext.GetTokenAsync(Constants.AccessTokenClaimType);
+                var headers = new Metadata();
+                headers.Add("Authorization", $"Bearer {token}");
+                var product = _productClient.GetProduct(new ProductRequest() { ProductId = productId }, headers);
                 if (product == null)
                 {
                     _logger.LogError($"Bad request in ReviewController, method: GetReviewsByProductId(). Product with id {productId} does not exist.");
@@ -198,7 +211,10 @@ namespace Reviews.Api.Controllers
         {
             try
             {
-                var product = _productClient.GetProduct(new ProductRequest() { ProductId = productId });
+                var token = await HttpContext.GetTokenAsync(Constants.AccessTokenClaimType);
+                var headers = new Metadata();
+                headers.Add("Authorization", $"Bearer {token}");
+                var product = _productClient.GetProduct(new ProductRequest() { ProductId = productId }, headers);
                 if (product == null)
                 {
                     _logger.LogError($"Bad request in ReviewController, method: DeleteReviewsForProduct(). Product with id {productId} does not exist.");

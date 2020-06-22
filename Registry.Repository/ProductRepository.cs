@@ -90,7 +90,7 @@ namespace Registry.Repository
         {
             var headers = new Metadata();
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
-            var accessToken = authState.User.Claims.FirstOrDefault(c => c.Type.Equals("access_token"));
+            var accessToken = authState.User.Claims.FirstOrDefault(c => c.Type.Equals(Constants.AccessTokenClaimType));
             if (accessToken != null && !string.IsNullOrWhiteSpace(accessToken?.Value))
             {
                 headers.Add("Authorization", $"Bearer {accessToken?.Value}");

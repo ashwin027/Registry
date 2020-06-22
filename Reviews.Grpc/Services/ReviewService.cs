@@ -1,6 +1,9 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
+using Reviews.Models;
 using Reviews.Repository;
 using System;
 using System.Collections.Generic;
@@ -10,6 +13,7 @@ using static ProductCatalog.Grpc.Product;
 
 namespace Reviews.Grpc.Services
 {
+    [Authorize]
     public class ReviewService: Review.ReviewBase
     {
         private readonly ILogger<ReviewService> _logger;
@@ -101,7 +105,10 @@ namespace Reviews.Grpc.Services
             Status status;
             try
             {
-                var product = await _productClient.GetProductAsync(new ProductCatalog.Grpc.ProductRequest() { ProductId = request.ProductId });
+                var token = await context.GetHttpContext().GetTokenAsync(Constants.AccessTokenClaimType);
+                var headers = new Metadata();
+                headers.Add("Authorization", $"Bearer {token}");
+                var product = await _productClient.GetProductAsync(new ProductCatalog.Grpc.ProductRequest() { ProductId = request.ProductId }, headers);
                 if (product == null)
                 {
                     status = new Status(StatusCode.NotFound, $"Product with id {request.ProductId} not found.");

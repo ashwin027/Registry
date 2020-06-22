@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Registry.Models
+namespace Reviews.Models
 {
     public static class Constants
     {
-        public const string QuantityInvalidError = "Quantity has to be greater than 0.";
         public const string AccessTokenClaimType = "access_token";
     }
 }

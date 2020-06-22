@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -39,6 +41,18 @@ namespace Reviews.Grpc
                 o.Address = new Uri(config.ProductEndpoint);
             });
 
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                    .AddIdentityServerAuthentication(options =>
+                    {
+                        options.Authority = Configuration["oidc:authority"];
+                        options.ApiName = Configuration["oidc:apiname"];
+                        options.RequireHttpsMetadata = true;
+                    });
+
+            var policy = new AuthorizationPolicyBuilder()
+                        .RequireAuthenticatedUser()
+                        .Build();
+            services.AddAuthorization();
 
             services.AddScoped<IReviewRepository, ReviewRepository>();
 
@@ -54,6 +68,9 @@ namespace Reviews.Grpc
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
