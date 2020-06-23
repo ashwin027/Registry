@@ -14,6 +14,8 @@ using ProductCatalog.Common.Models;
 using ProductCatalog.Grpc.Services;
 using ProductCatalog.Models;
 using ProductCatalog.Repository;
+using ProductCatalog.Shared;
+using ProductCatalog.Shared.Extensions;
 
 namespace ProductCatalog.Grpc
 {
@@ -32,17 +34,12 @@ namespace ProductCatalog.Grpc
             services.AddDbContext<ProductContext>();
             services.Configure<Config>(Configuration.GetSection(nameof(Config)));
 
-            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                    .AddIdentityServerAuthentication(options =>
-                    {
-                        options.Authority = Configuration["oidc:authority"];
-                        options.ApiName = Configuration["oidc:apiname"];
-                        options.RequireHttpsMetadata = true;
-                    });
-
-            var policy = new AuthorizationPolicyBuilder()
-                        .RequireAuthenticatedUser()
-                        .Build();
+            var config = new IdentityConfiguration()
+            {
+                Authority = Configuration["oidc:authority"],
+                ApiName = Configuration["oidc:apiname"]
+            };
+            services.AddProductAuthentication(config);
             services.AddAuthorization();
 
             // Register repositories

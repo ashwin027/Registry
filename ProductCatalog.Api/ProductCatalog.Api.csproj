@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ProductCatalog.Models\ProductCatalog.Models.csproj" />
     <ProjectReference Include="..\ProductCatalog.Repositories\ProductCatalog.Repository.csproj" />
+    <ProjectReference Include="..\ProductCatalog.Shared\ProductCatalog.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

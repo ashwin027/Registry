@@ -15,6 +15,8 @@ using IdentityServer4;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using ProductCatalog.Shared;
+using ProductCatalog.Shared.Extensions;
 
 namespace ProductCatalog.Api
 {
@@ -33,21 +35,15 @@ namespace ProductCatalog.Api
             services.AddDbContext<ProductContext>();
             services.Configure<Config>(Configuration.GetSection(nameof(Config)));
 
-            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                    .AddIdentityServerAuthentication(options =>
-                    {
-                        options.Authority = Configuration["oidc:authority"];
-                        options.ApiName = Configuration["oidc:apiname"];
-                        options.RequireHttpsMetadata = true;
-                    });
-
-            var policy = new AuthorizationPolicyBuilder()
-                        .RequireAuthenticatedUser()
-                        .Build();
-            services.AddAuthorization();
+            var config = new IdentityConfiguration()
+            {
+                Authority = Configuration["oidc:authority"],
+                ApiName = Configuration["oidc:apiname"]
+            };
+            services.AddProductAuthentication(config);
 
             services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddControllers(configure => configure.Filters.Add(new AuthorizeFilter(policy)));
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
