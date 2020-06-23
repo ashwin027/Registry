@@ -1,29 +1,40 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Reviews.Models;
 using Reviews.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using static ProductCatalog.Grpc.Product;
 
 namespace Reviews.Grpc.Services
 {
     [Authorize]
-    public class ReviewService: Review.ReviewBase
+    public class ReviewService : Review.ReviewBase
     {
+        private readonly IConfiguration _configuration;
         private readonly ILogger<ReviewService> _logger;
         private readonly IReviewRepository _repository;
         private readonly ProductClient _productClient;
-        public ReviewService(ILogger<ReviewService> logger, IReviewRepository reviewRepository, ProductClient productClient)
+        private readonly IHttpClientFactory _httpClientFactory;
+        public ReviewService(ILogger<ReviewService> logger,
+            IReviewRepository reviewRepository,
+            ProductClient productClient,
+            IHttpClientFactory HttpClientFactory,
+            IConfiguration Configuration)
         {
             _logger = logger;
             _repository = reviewRepository;
             _productClient = productClient;
+            _httpClientFactory = HttpClientFactory;
+            _configuration = Configuration;
         }
         public override async Task<Reviews> GetAllReviews(ReviewsRequest request, ServerCallContext context)
         {
@@ -87,7 +98,7 @@ namespace Reviews.Grpc.Services
                         Rating = review.Rating,
                         SubmitDate = review.SubmitDate.ToUniversalTime().ToTimestamp()
                     };
-                    
+
                     return reviewResponse;
                 }
 
@@ -105,10 +116,8 @@ namespace Reviews.Grpc.Services
             Status status;
             try
             {
-                var token = await context.GetHttpContext().GetTokenAsync(Constants.AccessTokenClaimType);
-                var headers = new Metadata();
-                headers.Add("Authorization", $"Bearer {token}");
-                var product = await _productClient.GetProductAsync(new ProductCatalog.Grpc.ProductRequest() { ProductId = request.ProductId }, headers);
+                var userToken = await context.GetHttpContext().GetTokenAsync(Constants.AccessTokenClaimType);
+                var product = await _productClient.GetProductAsync(new ProductCatalog.Grpc.ProductRequest() { ProductId = request.ProductId }, await GetHeaders(userToken));
                 if (product == null)
                 {
                     status = new Status(StatusCode.NotFound, $"Product with id {request.ProductId} not found.");
@@ -150,6 +159,39 @@ namespace Reviews.Grpc.Services
                 _logger.LogError(ex, $"Server Error in ReviewService,{context.Method}");
                 throw new RpcException(Status.DefaultCancelled, ex.Message);
             }
+        }
+
+        private async Task<Metadata> GetHeaders(string userToken)
+        {
+            var headers = new Metadata();
+            var token = await DelegateAsync(userToken);
+            headers.Add("Authorization", $"Bearer {token.AccessToken}");
+
+            return headers;
+        }
+
+        private async Task<TokenResponse> DelegateAsync(string userToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var endpoint = _configuration["oidc:authority"];
+
+            if (!endpoint.Trim().EndsWith("/"))
+            {
+                endpoint = $"{endpoint}/";
+            }
+            endpoint = $"{endpoint}connect/token";
+
+            // send custom grant to token endpoint, return response
+            return await client.RequestTokenAsync(new TokenRequest
+            {
+                Address = endpoint,
+                GrantType = "delegation",
+
+                ClientId = "Reviews",
+                ClientSecret = "ReviewClient",
+
+                Parameters = { { "scope", "productcatalog" }, { "token", userToken } }
+            });
         }
     }
 }

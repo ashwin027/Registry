@@ -12,6 +12,9 @@ using Reviews.Models;
 using Microsoft.AspNetCore.Authorization;
 using Grpc.Core;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Configuration;
+using System.Net.Http;
+using IdentityModel.Client;
 
 namespace Reviews.Api.Controllers
 {
@@ -20,14 +23,22 @@ namespace Reviews.Api.Controllers
     [Authorize]
     public class ReviewController: ControllerBase
     {
+        private readonly IConfiguration _configuration;
         private readonly ILogger<ReviewController> _logger;
         private readonly IReviewRepository _repository;
         private readonly ProductClient _productClient;
-        public ReviewController(ILogger<ReviewController> logger, IReviewRepository reviewRepository, ProductClient productClient)
+        private readonly IHttpClientFactory _httpClientFactory;
+        public ReviewController(ILogger<ReviewController> logger, 
+            IReviewRepository reviewRepository, 
+            ProductClient productClient,
+            IHttpClientFactory HttpClientFactory,
+            IConfiguration Configuration)
         {
             _logger = logger;
             _repository = reviewRepository;
             _productClient = productClient;
+            _configuration = Configuration;
+            _httpClientFactory = HttpClientFactory;
         }
 
         [HttpGet("{id}")]
@@ -86,10 +97,8 @@ namespace Reviews.Api.Controllers
                     return BadRequest("Request is null");
                 }
 
-                var token = await HttpContext.GetTokenAsync(Constants.AccessTokenClaimType);
-                var headers = new Metadata();
-                headers.Add("Authorization", $"Bearer {token}");
-                var product = _productClient.GetProduct(new ProductRequest() { ProductId = review.ProductId }, headers);
+                var userToken = await HttpContext.GetTokenAsync(Constants.AccessTokenClaimType);
+                var product = _productClient.GetProduct(new ProductRequest() { ProductId = review.ProductId }, await GetHeaders(userToken));
                 if (product == null)
                 {
                     _logger.LogError($"Bad request in ReviewController, method: CreateReview(). Product with id {review.ProductId} does not exist.");
@@ -124,10 +133,8 @@ namespace Reviews.Api.Controllers
                     return BadRequest();
                 }
 
-                var token = await HttpContext.GetTokenAsync(Constants.AccessTokenClaimType);
-                var headers = new Metadata();
-                headers.Add("Authorization", $"Bearer {token}");
-                var product = _productClient.GetProduct(new ProductRequest() { ProductId = review.ProductId }, headers);
+                var userToken = await HttpContext.GetTokenAsync(Constants.AccessTokenClaimType);
+                var product = _productClient.GetProduct(new ProductRequest() { ProductId = review.ProductId }, await GetHeaders(userToken));
                 if (product == null)
                 {
                     _logger.LogError($"Bad request in ReviewController, method: UpdateReview(). Product with id {review.ProductId} does not exist.");
@@ -179,10 +186,8 @@ namespace Reviews.Api.Controllers
         {
             try
             {
-                var token = await HttpContext.GetTokenAsync(Constants.AccessTokenClaimType);
-                var headers = new Metadata();
-                headers.Add("Authorization", $"Bearer {token}");
-                var product = _productClient.GetProduct(new ProductRequest() { ProductId = productId }, headers);
+                var userToken = await HttpContext.GetTokenAsync(Constants.AccessTokenClaimType);
+                var product = _productClient.GetProduct(new ProductRequest() { ProductId = productId }, await GetHeaders(userToken));
                 if (product == null)
                 {
                     _logger.LogError($"Bad request in ReviewController, method: GetReviewsByProductId(). Product with id {productId} does not exist.");
@@ -211,10 +216,8 @@ namespace Reviews.Api.Controllers
         {
             try
             {
-                var token = await HttpContext.GetTokenAsync(Constants.AccessTokenClaimType);
-                var headers = new Metadata();
-                headers.Add("Authorization", $"Bearer {token}");
-                var product = _productClient.GetProduct(new ProductRequest() { ProductId = productId }, headers);
+                var userToken = await HttpContext.GetTokenAsync(Constants.AccessTokenClaimType);
+                var product = _productClient.GetProduct(new ProductRequest() { ProductId = productId }, await GetHeaders(userToken));
                 if (product == null)
                 {
                     _logger.LogError($"Bad request in ReviewController, method: DeleteReviewsForProduct(). Product with id {productId} does not exist.");
@@ -230,6 +233,39 @@ namespace Reviews.Api.Controllers
                 _logger.LogError("Server Error in ReviewController, method: DeleteReviewsForProduct().", ex);
                 return StatusCode(500);
             }
+        }
+
+        private async Task<Metadata> GetHeaders(string userToken)
+        {
+            var headers = new Metadata();
+            var token = await DelegateAsync(userToken);
+            headers.Add("Authorization", $"Bearer {token.AccessToken}");
+
+            return headers;
+        }
+
+        private async Task<TokenResponse> DelegateAsync(string userToken)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var endpoint = _configuration["oidc:authority"];
+
+            if (!endpoint.Trim().EndsWith("/"))
+            {
+                endpoint = $"{endpoint}/";
+            }
+            endpoint = $"{endpoint}connect/token";
+
+            // send custom grant to token endpoint, return response
+            return await client.RequestTokenAsync(new TokenRequest
+            {
+                Address = endpoint,
+                GrantType = "delegation",
+
+                ClientId = "Reviews",
+                ClientSecret = "ReviewClient",
+
+                Parameters = { { "scope", "productcatalog" }, { "token", userToken } }
+            });
         }
     }
 }

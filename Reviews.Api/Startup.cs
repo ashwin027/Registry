@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authorization;
@@ -56,6 +57,7 @@ namespace Reviews.Api
             services.AddAuthorization();
 
             services.AddScoped<IReviewRepository, ReviewRepository>();
+            services.AddHttpClient();
 
             services.AddControllers();
         }

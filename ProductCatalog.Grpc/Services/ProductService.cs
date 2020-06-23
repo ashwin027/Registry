@@ -2,6 +2,7 @@
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ProductCatalog.Grpc.Extensions;
 using ProductCatalog.Repository;
@@ -15,13 +16,16 @@ namespace ProductCatalog.Grpc.Services
     [Authorize]
     public class ProductService: Product.ProductBase
     {
+        public readonly IConfiguration _configuration;
         private readonly ILogger<ProductService> _logger;
         private readonly IProductRepository _repository;
-        public ProductService(ILogger<ProductService> logger, IProductRepository repository)
+        public ProductService(ILogger<ProductService> logger, IProductRepository repository, IConfiguration Configuration)
         {
             _repository = repository;
             _logger = logger;
             _logger.LogInformation("Product service initialized.");
+
+            _configuration = Configuration;
         }
         public override async Task<ProductResponse> GetProduct(ProductRequest request, ServerCallContext context)
         {
