@@ -1,6 +1,7 @@
 ﻿using Grpc.Core;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using ProductCatalog.Grpc;
 using Registry.Models;
 using Registry.Repository.Extensions;
@@ -90,7 +91,7 @@ namespace Registry.Repository
         {
             var headers = new Metadata();
             var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
-            var accessToken = authState.User.Claims.FirstOrDefault(c => c.Type.Equals(Constants.AccessTokenClaimType));
+            var accessToken = authState.User.Claims.FirstOrDefault(c => c.Type.Equals(OpenIdConnectParameterNames.AccessToken));
             if (accessToken != null && !string.IsNullOrWhiteSpace(accessToken?.Value))
             {
                 headers.Add("Authorization", $"Bearer {accessToken?.Value}");

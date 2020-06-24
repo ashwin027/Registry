@@ -15,6 +15,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Reviews.Models;
 using Reviews.Repository;
+using Reviews.Shared;
+using Reviews.Shared.Extensions;
 using static ProductCatalog.Grpc.Product;
 
 namespace Reviews.Api
@@ -43,17 +45,7 @@ namespace Reviews.Api
                 o.Address = new Uri(config.ProductEndpoint);
             });
 
-            services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                    .AddIdentityServerAuthentication(options =>
-                    {
-                        options.Authority = Configuration["oidc:authority"];
-                        options.ApiName = Configuration["oidc:apiname"];
-                        options.RequireHttpsMetadata = true;
-                    });
-
-            var policy = new AuthorizationPolicyBuilder()
-                        .RequireAuthenticatedUser()
-                        .Build();
+            services.AddAuthentication(config);
             services.AddAuthorization();
 
             services.AddScoped<IReviewRepository, ReviewRepository>();

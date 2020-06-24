@@ -5,8 +5,11 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Reviews.Models;
 using Reviews.Repository;
+using Reviews.Shared.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +22,7 @@ namespace Reviews.Grpc.Services
     [Authorize]
     public class ReviewService : Review.ReviewBase
     {
-        private readonly IConfiguration _configuration;
+        private readonly Config _config;
         private readonly ILogger<ReviewService> _logger;
         private readonly IReviewRepository _repository;
         private readonly ProductClient _productClient;
@@ -28,13 +31,13 @@ namespace Reviews.Grpc.Services
             IReviewRepository reviewRepository,
             ProductClient productClient,
             IHttpClientFactory HttpClientFactory,
-            IConfiguration Configuration)
+            IOptions<Config> config)
         {
             _logger = logger;
             _repository = reviewRepository;
             _productClient = productClient;
             _httpClientFactory = HttpClientFactory;
-            _configuration = Configuration;
+            _config = config.Value;
         }
         public override async Task<Reviews> GetAllReviews(ReviewsRequest request, ServerCallContext context)
         {
@@ -116,7 +119,7 @@ namespace Reviews.Grpc.Services
             Status status;
             try
             {
-                var userToken = await context.GetHttpContext().GetTokenAsync(Constants.AccessTokenClaimType);
+                var userToken = await context.GetHttpContext().GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
                 var product = await _productClient.GetProductAsync(new ProductCatalog.Grpc.ProductRequest() { ProductId = request.ProductId }, await GetHeaders(userToken));
                 if (product == null)
                 {
@@ -163,35 +166,12 @@ namespace Reviews.Grpc.Services
 
         private async Task<Metadata> GetHeaders(string userToken)
         {
+            var client = _httpClientFactory.CreateClient();
             var headers = new Metadata();
-            var token = await DelegateAsync(userToken);
-            headers.Add("Authorization", $"Bearer {token.AccessToken}");
+            var accessToken = await client.GetDelegatedProductTokenAsync(_config, userToken);
+            headers.Add("Authorization", $"Bearer {accessToken}");
 
             return headers;
-        }
-
-        private async Task<TokenResponse> DelegateAsync(string userToken)
-        {
-            var client = _httpClientFactory.CreateClient();
-            var endpoint = _configuration["oidc:authority"];
-
-            if (!endpoint.Trim().EndsWith("/"))
-            {
-                endpoint = $"{endpoint}/";
-            }
-            endpoint = $"{endpoint}connect/token";
-
-            // send custom grant to token endpoint, return response
-            return await client.RequestTokenAsync(new TokenRequest
-            {
-                Address = endpoint,
-                GrantType = "delegation",
-
-                ClientId = "Reviews",
-                ClientSecret = "ReviewClient",
-
-                Parameters = { { "scope", "productcatalog" }, { "token", userToken } }
-            });
         }
     }
 }

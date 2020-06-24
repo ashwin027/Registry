@@ -7,6 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Reviews.Models\Reviews.Models.csproj" />
     <ProjectReference Include="..\Reviews.Repository\Reviews.Repository.csproj" />
+    <ProjectReference Include="..\Reviews.Shared\Reviews.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

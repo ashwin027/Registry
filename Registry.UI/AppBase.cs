@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace Registry.UI
         {
             var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             var identity = authState.User.Identities.FirstOrDefault();
-            identity.AddClaim(new Claim("access_token", AccessToken));
+            identity.AddClaim(new Claim(OpenIdConnectParameterNames.AccessToken, AccessToken));
         }
     }
 }

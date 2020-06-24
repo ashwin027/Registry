@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Registry.Models;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace Registry.UI.Pages
         {
             if (User.Identity.IsAuthenticated)
             {
-                var token = await HttpContext.GetTokenAsync(Constants.AccessTokenClaimType);
+                var token = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
                 AccessToken = token;
             }
             return Page();

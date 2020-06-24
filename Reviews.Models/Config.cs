@@ -8,5 +8,12 @@ namespace Reviews.Models
     {
         public string ConnectionString { get; set; }
         public string ProductEndpoint { get; set; }
+        public Identity Identity { get; set; }
+    }
+
+    public class Identity
+    {
+        public string Authority { get; set; }
+        public string ApiName { get; set; }
     }
 }

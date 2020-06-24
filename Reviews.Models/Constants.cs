@@ -6,6 +6,6 @@ namespace Reviews.Models
 {
     public static class Constants
     {
-        public const string AccessTokenClaimType = "access_token";
+        public const string DelegatedGrantType = "delegation";
     }
 }

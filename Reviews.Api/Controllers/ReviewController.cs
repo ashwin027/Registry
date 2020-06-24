@@ -15,6 +15,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http;
 using IdentityModel.Client;
+using Reviews.Shared.Extensions;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.Extensions.Options;
 
 namespace Reviews.Api.Controllers
 {
@@ -23,7 +26,7 @@ namespace Reviews.Api.Controllers
     [Authorize]
     public class ReviewController: ControllerBase
     {
-        private readonly IConfiguration _configuration;
+        private readonly Config _config;
         private readonly ILogger<ReviewController> _logger;
         private readonly IReviewRepository _repository;
         private readonly ProductClient _productClient;
@@ -32,12 +35,12 @@ namespace Reviews.Api.Controllers
             IReviewRepository reviewRepository, 
             ProductClient productClient,
             IHttpClientFactory HttpClientFactory,
-            IConfiguration Configuration)
+            IOptions<Config> config)
         {
             _logger = logger;
             _repository = reviewRepository;
             _productClient = productClient;
-            _configuration = Configuration;
+            _config = config.Value;
             _httpClientFactory = HttpClientFactory;
         }
 
@@ -97,7 +100,7 @@ namespace Reviews.Api.Controllers
                     return BadRequest("Request is null");
                 }
 
-                var userToken = await HttpContext.GetTokenAsync(Constants.AccessTokenClaimType);
+                var userToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
                 var product = _productClient.GetProduct(new ProductRequest() { ProductId = review.ProductId }, await GetHeaders(userToken));
                 if (product == null)
                 {
@@ -133,7 +136,7 @@ namespace Reviews.Api.Controllers
                     return BadRequest();
                 }
 
-                var userToken = await HttpContext.GetTokenAsync(Constants.AccessTokenClaimType);
+                var userToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
                 var product = _productClient.GetProduct(new ProductRequest() { ProductId = review.ProductId }, await GetHeaders(userToken));
                 if (product == null)
                 {
@@ -186,7 +189,7 @@ namespace Reviews.Api.Controllers
         {
             try
             {
-                var userToken = await HttpContext.GetTokenAsync(Constants.AccessTokenClaimType);
+                var userToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
                 var product = _productClient.GetProduct(new ProductRequest() { ProductId = productId }, await GetHeaders(userToken));
                 if (product == null)
                 {
@@ -216,7 +219,7 @@ namespace Reviews.Api.Controllers
         {
             try
             {
-                var userToken = await HttpContext.GetTokenAsync(Constants.AccessTokenClaimType);
+                var userToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
                 var product = _productClient.GetProduct(new ProductRequest() { ProductId = productId }, await GetHeaders(userToken));
                 if (product == null)
                 {
@@ -237,35 +240,12 @@ namespace Reviews.Api.Controllers
 
         private async Task<Metadata> GetHeaders(string userToken)
         {
+            var client = _httpClientFactory.CreateClient();
             var headers = new Metadata();
-            var token = await DelegateAsync(userToken);
-            headers.Add("Authorization", $"Bearer {token.AccessToken}");
+            var accessToken = await client.GetDelegatedProductTokenAsync(_config, userToken);
+            headers.Add("Authorization", $"Bearer {accessToken}");
 
             return headers;
-        }
-
-        private async Task<TokenResponse> DelegateAsync(string userToken)
-        {
-            var client = _httpClientFactory.CreateClient();
-            var endpoint = _configuration["oidc:authority"];
-
-            if (!endpoint.Trim().EndsWith("/"))
-            {
-                endpoint = $"{endpoint}/";
-            }
-            endpoint = $"{endpoint}connect/token";
-
-            // send custom grant to token endpoint, return response
-            return await client.RequestTokenAsync(new TokenRequest
-            {
-                Address = endpoint,
-                GrantType = "delegation",
-
-                ClientId = "Reviews",
-                ClientSecret = "ReviewClient",
-
-                Parameters = { { "scope", "productcatalog" }, { "token", userToken } }
-            });
         }
     }
 }

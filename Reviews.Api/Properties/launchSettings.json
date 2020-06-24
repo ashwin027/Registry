@@ -11,7 +11,7 @@
   "profiles": {
     "Reviews.Api": {
       "commandName": "Project",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "api/reviews",
       "applicationUrl": "http://localhost:6010;https://localhost:6011",
       "environmentVariables": {
@@ -20,7 +20,7 @@
     },
     "IIS Express": {
       "commandName": "IISExpress",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "api/reviews",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
