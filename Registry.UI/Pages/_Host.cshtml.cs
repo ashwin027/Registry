@@ -16,8 +16,8 @@ namespace Registry.UI.Pages
         {
             if (User.Identity.IsAuthenticated)
             {
-                var token = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
-                AccessToken = token;
+                var accessToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
+                AccessToken = accessToken;
             }
             return Page();
         }

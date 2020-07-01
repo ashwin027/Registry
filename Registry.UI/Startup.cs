@@ -19,6 +19,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
+using IdentityModel;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Registry.UI
 {
@@ -54,6 +59,7 @@ namespace Registry.UI
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
 
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -74,6 +80,12 @@ namespace Registry.UI
                 options.GetClaimsFromUserInfoEndpoint = true;
                 options.RequireHttpsMetadata = true;
                 options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.ClaimActions.MapUniqueJsonKey(JwtClaimTypes.Role, JwtClaimTypes.Role);
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    NameClaimType = JwtClaimTypes.Name,
+                    RoleClaimType = JwtClaimTypes.Role
+                };
             });
 
             // Adding http client to get the access token
