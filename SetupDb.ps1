@@ -1,3 +1,6 @@
+Write-Host "Creating identity server"
+dotnet ef migrations add InitialIdentityServerConfigurationDBMigration --context ConfigurationDbContext --startup-project "Registry.IDP"
+dotnet ef migrations add InitialIdentityServerOperationalMigration --context PersistedgrantDbContext --startup-project "Registry.IDP"
 Write-Host "Creating product catalog."
 dotnet ef database update  --startup-project "ProductCatalog.Api"
 Write-Host "Creating reviews."
