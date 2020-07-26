@@ -28,7 +28,7 @@ namespace Reviews.Shared.Extensions
                 GrantType = Constants.DelegatedGrantType,
 
                 ClientId = "Reviews",
-                ClientSecret = "ReviewClient",
+                ClientSecret = "7666393",
 
                 Parameters = { { "scope", "productcatalog" }, { "token", userToken } }
             });

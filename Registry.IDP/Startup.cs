@@ -11,17 +11,22 @@ using System.Linq;
 using System.Reflection;
 using Registry.IDP.Models;
 using Registry.IDP.Validators;
+using Microsoft.Extensions.Logging;
+using System.Security.Cryptography.X509Certificates;
+using Registry.IDP.Extensions;
 
 namespace Registry.IDP
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            CurrentEnvironment = env;
         }
 
         public IConfiguration Configuration { get; }
+        private IWebHostEnvironment CurrentEnvironment { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -30,23 +35,19 @@ namespace Registry.IDP
             services.AddControllersWithViews();
 
             services.AddScoped<IExtensionGrantValidator, DelegationGrantValidator>();
-            var config = new SettingsConfig();
-            Configuration.GetSection(nameof(SettingsConfig)).Bind(config);
+
+            var httpsEndpointConfig = new EndpointConfiguration();
+            Configuration.GetSection("HttpServer:Https").Bind(httpsEndpointConfig);
 
             var builder = services.AddIdentityServer()
-                .AddDeveloperSigningCredential()
+                .AddSigningCredential(new X509Certificate2(KestrelServerOptionsExtensions.LoadCertificate(httpsEndpointConfig, CurrentEnvironment)))
                 .AddTestUsers(Config.GetUsers());
 
-            // For testing locally, use in-memory stores
-            //.AddInMemoryIdentityResources(Config.GetIdentityResources())
-            //.AddInMemoryApiResources(Config.GetApiResources())
-            //.AddInMemoryClients(Config.GetClients());
-
+            var identityConnectionString = Configuration.GetConnectionString("IdentityDatabase");
             var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
-
             builder.AddConfigurationStore(options =>
             {
-                options.ConfigureDbContext = builder => builder.UseSqlServer(config.ConnectionString, (options) =>
+                options.ConfigureDbContext = builder => builder.UseSqlServer(identityConnectionString, (options) =>
                 {
                     options.MigrationsAssembly(migrationsAssembly);
                 });
@@ -54,7 +55,7 @@ namespace Registry.IDP
 
             builder.AddOperationalStore(options =>
             {
-                options.ConfigureDbContext = builder => builder.UseSqlServer(config.ConnectionString, (options) =>
+                options.ConfigureDbContext = builder => builder.UseSqlServer(identityConnectionString, (options) =>
                 {
                     options.MigrationsAssembly(migrationsAssembly);
                 });
@@ -62,7 +63,7 @@ namespace Registry.IDP
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             if (env.IsDevelopment())
             {
@@ -82,6 +83,7 @@ namespace Registry.IDP
             app.UseIdentityServer();
 
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
             app.UseRouting();
