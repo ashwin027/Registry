@@ -97,7 +97,11 @@ namespace Registry.IDP
                 {
                     ClientName = "Registry Client",
                     ClientId = "Registry",
-                    AllowedGrantTypes = GrantTypes.Hybrid,
+                    AllowedGrantTypes = new List<string>()
+                    {
+                        GrantType.Hybrid,
+                        GrantType.ResourceOwnerPassword,
+                    },
                     RequireConsent = false,
                     RedirectUris = new List<string>()
                     {
@@ -131,6 +135,21 @@ namespace Registry.IDP
                     AllowedScopes = new List<string>()
                     {
                         "productcatalog"
+                    }
+                },
+                // This client is to test each Rest API.
+                new Client
+                {
+                    ClientId = "All",
+                    AllowedGrantTypes = { GrantType.ResourceOwnerPassword },
+                    ClientSecrets =
+                    {
+                        new Secret("7266396".Sha256())
+                    },
+                    AllowedScopes = new List<string>()
+                    {
+                        "productcatalog",
+                        "reviews"
                     }
                 }
             };

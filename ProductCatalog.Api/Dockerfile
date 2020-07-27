@@ -21,5 +21,8 @@ RUN dotnet publish "ProductCatalog.Api.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
+# This crt file is copied from the original cert location so it can be included in the image
+ADD myCA.pem /usr/local/share/ca-certificates/myCA.crt
+RUN update-ca-certificates
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "ProductCatalog.Api.dll"]

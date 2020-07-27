@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -31,8 +32,10 @@ namespace ProductCatalog.Grpc
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ProductContext>();
-            services.Configure<Config>(Configuration.GetSection(nameof(Config)));
+            services.AddDbContext<ProductContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("ProductDatabase"));
+            });
 
             var config = new IdentityConfiguration()
             {
@@ -44,7 +47,6 @@ namespace ProductCatalog.Grpc
 
             // Register repositories
             services.AddScoped<IProductRepository, ProductRepository>();
-
             services.AddGrpc();
         }
 

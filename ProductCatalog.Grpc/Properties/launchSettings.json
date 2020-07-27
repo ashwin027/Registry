@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "ProductCatalog.Grpc (1)": {
+    "ProductCatalog.Grpc": {
       "commandName": "Project",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

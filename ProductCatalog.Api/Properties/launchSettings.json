@@ -9,7 +9,7 @@
   },
   "$schema": "http://json.schemastore.org/launchsettings.json",
   "profiles": {
-    "ProductCatalog.Api (1)": {
+    "ProductCatalog.Api": {
       "commandName": "Project",
       "launchUrl": "api/products",
       "environmentVariables": {
@@ -23,11 +23,6 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
-    },
-    "Docker": {
-      "commandName": "Docker",
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/api/products",
-      "publishAllPorts": true
     }
   }
 }
