@@ -14,17 +14,10 @@ namespace Registry.Repository
     // dotnet ef database update  --startup-project "..\Registry.UI"
     public class RegistryContext: DbContext
     {
-        private readonly string _connectionString;
         public DbSet<RegistryRecord> Registry { get; set; }
 
-        public RegistryContext(IOptionsMonitor<Config> configAccessor, DbContextOptions<RegistryContext> options) : base(options)
+        public RegistryContext(DbContextOptions<RegistryContext> options) : base(options)
         {
-            _connectionString = configAccessor.CurrentValue.ConnectionString;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(_connectionString);
         }
     }
 }

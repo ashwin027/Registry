@@ -105,7 +105,7 @@ namespace Registry.IDP
                     RequireConsent = false,
                     RedirectUris = new List<string>()
                     {
-                        "http://localhost:4000/signin-oidc"
+                        "https://localhost:4001/signin-oidc"
                     },
                     ClientSecrets =
                     {
@@ -121,7 +121,7 @@ namespace Registry.IDP
                     },
                     PostLogoutRedirectUris =
                     {
-                        "http://localhost:4000/signout-callback-oidc"
+                        "https://localhost:4001/signout-callback-oidc"
                     }
                 },
                 new Client
