@@ -15,16 +15,9 @@ namespace Reviews.Repository
     // dotnet ef database update  --startup-project "..\Reviews.Api"
     public class ReviewContext: DbContext
     {
-        private readonly string _connectionString;
-
         public DbSet<Review> Reviews { get; set; }
-        public ReviewContext(IOptionsMonitor<Config> configAccessor, DbContextOptions<ReviewContext> options) : base(options)
+        public ReviewContext(DbContextOptions<ReviewContext> options) : base(options)
         {
-            _connectionString = configAccessor.CurrentValue.ConnectionString;
-        }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(_connectionString);
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

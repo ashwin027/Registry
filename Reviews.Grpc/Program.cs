@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Reviews.Shared.Extensions;
 
 namespace Reviews.Grpc
 {
@@ -28,6 +29,7 @@ namespace Reviews.Grpc
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseKestrel(options => options.ConfigureGRPCEndpoints());
                 });
     }
 }

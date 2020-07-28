@@ -11,9 +11,9 @@ namespace Reviews.Shared.Extensions
 {
     public static class HttpClientExtended
     {
-        public static async Task<string> GetDelegatedProductTokenAsync(this HttpClient client, Config config, string userToken)
+        public static async Task<string> GetDelegatedProductTokenAsync(this HttpClient client, IdentityConfiguration config, string userToken)
         {
-            var endpoint = config.Identity.Authority;
+            var endpoint = config.Authority;
 
             if (!endpoint.Trim().EndsWith("/"))
             {

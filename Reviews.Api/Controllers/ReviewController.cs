@@ -18,6 +18,7 @@ using IdentityModel.Client;
 using Reviews.Shared.Extensions;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.Extensions.Options;
+using Reviews.Shared;
 
 namespace Reviews.Api.Controllers
 {
@@ -26,22 +27,22 @@ namespace Reviews.Api.Controllers
     [Authorize]
     public class ReviewController: ControllerBase
     {
-        private readonly Config _config;
         private readonly ILogger<ReviewController> _logger;
         private readonly IReviewRepository _repository;
         private readonly ProductClient _productClient;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IdentityConfiguration _identityConfiguration;
         public ReviewController(ILogger<ReviewController> logger, 
             IReviewRepository reviewRepository, 
             ProductClient productClient,
             IHttpClientFactory HttpClientFactory,
-            IOptions<Config> config)
+            IOptions<IdentityConfiguration> identityConfig)
         {
             _logger = logger;
             _repository = reviewRepository;
             _productClient = productClient;
-            _config = config.Value;
             _httpClientFactory = HttpClientFactory;
+            _identityConfiguration = identityConfig.Value;
         }
 
         [HttpGet("{id}")]
@@ -242,7 +243,7 @@ namespace Reviews.Api.Controllers
         {
             var client = _httpClientFactory.CreateClient();
             var headers = new Metadata();
-            var accessToken = await client.GetDelegatedProductTokenAsync(_config, userToken);
+            var accessToken = await client.GetDelegatedProductTokenAsync(_identityConfiguration, userToken);
             headers.Add("Authorization", $"Bearer {accessToken}");
 
             return headers;

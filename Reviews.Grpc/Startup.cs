@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -33,18 +34,24 @@ namespace Reviews.Grpc
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ReviewContext>();
+            services.AddDbContext<ReviewContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("ReviewDatabase"));
+            });
 
-            var configSection = Configuration.GetSection(nameof(Config));
-            var config = configSection.Get<Config>();
-            services.Configure<Config>(configSection);
+            var config = new IdentityConfiguration()
+            {
+                Authority = Configuration["oidc:authority"],
+                ApiName = Configuration["oidc:apiname"]
+            };
+            services.Configure<IdentityConfiguration>(Configuration.GetSection(IdentityConfiguration.Oidc));
 
             services.AddGrpcClient<ProductClient>(o =>
             {
-                o.Address = new Uri(config.ProductEndpoint);
+                o.Address = new Uri(Configuration["ProductEndpoint"]);
             });
 
-            services.AddAuthentication(config);
+            services.AddReviewAuthentication(config);
             services.AddAuthorization();
 
             services.AddScoped<IReviewRepository, ReviewRepository>();
@@ -55,7 +62,7 @@ namespace Reviews.Grpc
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ReviewContext dataContext)
         {
             if (env.IsDevelopment())
             {
@@ -76,6 +83,9 @@ namespace Reviews.Grpc
                     await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
                 });
             });
+
+            // Migrate the DB
+            dataContext.Database.Migrate();
         }
     }
 }
