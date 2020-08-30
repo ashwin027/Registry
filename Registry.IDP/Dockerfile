@@ -19,4 +19,5 @@ RUN dotnet publish "Registry.IDP.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+RUN chmod +x wait-for-it.sh
 ENTRYPOINT ["dotnet", "Registry.IDP.dll"]

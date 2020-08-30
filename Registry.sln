@@ -33,13 +33,26 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		Readme.md = Readme.md
 		SetupDb.ps1 = SetupDb.ps1
+		wait-for-it.sh = wait-for-it.sh
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductCatalog.Shared", "ProductCatalog.Shared\ProductCatalog.Shared.csproj", "{D45FC8B4-8232-4CC8-8750-B53C2B51321D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reviews.Shared", "Reviews.Shared\Reviews.Shared.csproj", "{4018004F-38F9-4E08-975F-29B0940A52DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Registry.IDP", "Registry.IDP\Registry.IDP.csproj", "{AC27A871-E8AB-460B-AC35-60AE940E4EC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Registry.IDP", "Registry.IDP\Registry.IDP.csproj", "{AC27A871-E8AB-460B-AC35-60AE940E4EC2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Compose", "Compose", "{A913DADD-240B-44D2-BF3C-3FF8D9BD8C9E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hub", "Hub", "{EC9CC05E-BC1C-47A2-8CE2-24509163D57F}"
+	ProjectSection(SolutionItems) = preProject
+		Compose\Hub\docker-compose.yml = Compose\Hub\docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Local", "Local", "{1206B2FD-4BAA-4835-9CD7-1FB53C02ACF1}"
+	ProjectSection(SolutionItems) = preProject
+		Compose\Local\docker-compose.yml = Compose\Local\docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -118,6 +131,8 @@ Global
 		{311D91DF-80D9-4279-821D-3205AD0F647E} = {F3B190F1-30A5-4C4D-9020-E916B36E1743}
 		{D45FC8B4-8232-4CC8-8750-B53C2B51321D} = {DE43B855-A35E-4AF5-A215-EC46935864A6}
 		{4018004F-38F9-4E08-975F-29B0940A52DA} = {F3B190F1-30A5-4C4D-9020-E916B36E1743}
+		{EC9CC05E-BC1C-47A2-8CE2-24509163D57F} = {A913DADD-240B-44D2-BF3C-3FF8D9BD8C9E}
+		{1206B2FD-4BAA-4835-9CD7-1FB53C02ACF1} = {A913DADD-240B-44D2-BF3C-3FF8D9BD8C9E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0ABEC9BB-EE4D-4727-8A31-FB6F824FE5F0}

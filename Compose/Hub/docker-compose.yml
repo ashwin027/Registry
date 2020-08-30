@@ -1,0 +1,38 @@
+version: '3.0'
+services:
+  sql:
+    image: mcr.microsoft.com/mssql/server:2019-CU5-ubuntu-18.04
+    environment:
+            SA_PASSWORD: "Your_password123!"
+            ACCEPT_EULA: "Y"
+    command:
+      - /bin/bash
+      - -c
+      - |
+        # Launch MSSQL and send to background
+        /opt/mssql/bin/sqlservr &
+        pid=$$!
+        # Wait for it to be available
+        echo "Waiting for MS SQL to be available ⏳"
+        /opt/mssql-tools/bin/sqlcmd -l 30 -S localhost -U sa -P $$SA_PASSWORD -Q "SET NOCOUNT ON SELECT \"YAY WE ARE UP\" , @@servername"
+        is_up=$$?
+        while [ $$is_up -ne 0 ] ; do
+          echo -e $$(date)
+          /opt/mssql-tools/bin/sqlcmd -l 30 -S localhost -U sa -P $$SA_PASSWORD -Q "SET NOCOUNT ON SELECT \"YAY WE ARE UP\" , @@servername"
+          is_up=$$?
+          sleep 5
+        done
+        /opt/mssql-tools/bin/sqlcmd -l 30 -S localhost -U sa -P $$SA_PASSWORD -Q 'CREATE LOGIN serviceuser WITH PASSWORD = "serviceuser", CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF;ALTER SERVER ROLE [sysadmin] ADD MEMBER [serviceuser];'
+        wait $$pid
+    ports:
+    - "1433:1433"
+  registryidp:
+    image: ashwin027/registry-idp:initial
+    ports: 
+      - "8000:8000"
+      - "8001:8001"
+    environment:
+      ConnectionStrings__IdentityDatabase: "Server=sql:1433;Database=Identity;User Id=serviceuser;Password=serviceuser"
+    depends_on: 
+      - sql
+  
