@@ -17,15 +17,9 @@ namespace ProductCatalog.Repository
     // dotnet ef database update  --startup-project "..\ProductCatalog.Api"
     public class ProductContext : DbContext
     {
-        private readonly string _connectionString;
         public DbSet<Product> Products { get; set; }
-        public ProductContext(IOptionsMonitor<Config> configAccessor, DbContextOptions<ProductContext> options) : base(options)
+        public ProductContext(DbContextOptions<ProductContext> options) : base(options)
         {
-            _connectionString = configAccessor.CurrentValue.ConnectionString;
-        }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(_connectionString);
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

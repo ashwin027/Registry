@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Reviews.Models;
 using Reviews.Repository;
+using Reviews.Shared;
 using Reviews.Shared.Extensions;
 using System;
 using System.Collections.Generic;
@@ -22,22 +23,22 @@ namespace Reviews.Grpc.Services
     [Authorize]
     public class ReviewService : Review.ReviewBase
     {
-        private readonly Config _config;
         private readonly ILogger<ReviewService> _logger;
         private readonly IReviewRepository _repository;
         private readonly ProductClient _productClient;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IdentityConfiguration _identityConfiguration;
         public ReviewService(ILogger<ReviewService> logger,
             IReviewRepository reviewRepository,
             ProductClient productClient,
             IHttpClientFactory HttpClientFactory,
-            IOptions<Config> config)
+            IOptions<IdentityConfiguration> identityConfig)
         {
             _logger = logger;
             _repository = reviewRepository;
             _productClient = productClient;
             _httpClientFactory = HttpClientFactory;
-            _config = config.Value;
+            _identityConfiguration = identityConfig.Value;
         }
         public override async Task<Reviews> GetAllReviews(ReviewsRequest request, ServerCallContext context)
         {
@@ -168,7 +169,7 @@ namespace Reviews.Grpc.Services
         {
             var client = _httpClientFactory.CreateClient();
             var headers = new Metadata();
-            var accessToken = await client.GetDelegatedProductTokenAsync(_config, userToken);
+            var accessToken = await client.GetDelegatedProductTokenAsync(_identityConfiguration, userToken);
             headers.Add("Authorization", $"Bearer {accessToken}");
 
             return headers;

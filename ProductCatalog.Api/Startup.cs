@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,8 +23,10 @@ namespace ProductCatalog.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ProductContext>();
-            services.Configure<Config>(Configuration.GetSection(nameof(Config)));
+            services.AddDbContext<ProductContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("ProductDatabase"));
+            });
 
             var config = new IdentityConfiguration()
             {
@@ -31,13 +34,15 @@ namespace ProductCatalog.Api
                 ApiName = Configuration["oidc:apiname"]
             };
             services.AddProductAuthentication(config);
+            services.AddAuthorization();
 
+            // Register repositories
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ProductContext dataContext)
         {
             if (env.IsDevelopment())
             {
@@ -53,6 +58,9 @@ namespace ProductCatalog.Api
             {
                 endpoints.MapControllers();
             });
+
+            // Migrate the DB
+            dataContext.Database.Migrate();
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿{
-  "$schema": "http://json.schemastore.org/launchsettings.json",
+{
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
@@ -8,19 +7,18 @@
       "sslPort": 44308
     }
   },
+  "$schema": "http://json.schemastore.org/launchsettings.json",
   "profiles": {
     "Reviews.Api": {
       "commandName": "Project",
-      "launchBrowser": false,
       "launchUrl": "api/reviews",
-      "applicationUrl": "http://localhost:6010;https://localhost:6011",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "applicationUrl": "http://localhost:6010;https://localhost:6011"
     },
     "IIS Express": {
       "commandName": "IISExpress",
-      "launchBrowser": false,
       "launchUrl": "api/reviews",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

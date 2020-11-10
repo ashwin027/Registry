@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using IdentityModel;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
 
 namespace Registry.UI
 {
@@ -54,7 +55,10 @@ namespace Registry.UI
             });
 
             services.AddScoped<DialogService>();
-            services.AddDbContext<RegistryContext>();
+            services.AddDbContext<RegistryContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("RegistryDatabase"));
+            });
             services.AddScoped<IRegistryRepository, RegistryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IReviewRepository, ReviewRepository>();
@@ -105,7 +109,7 @@ namespace Registry.UI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, RegistryContext dataContext)
         {
             if (env.IsDevelopment())
             {
@@ -116,18 +120,23 @@ namespace Registry.UI
                 app.UseExceptionHandler("/Error");
             }
 
+            app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
             app.UseRouting();
 
             app.UseAuthentication();
-            // app.UseAuthorization();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
+
+            // Migrate the DB
+            dataContext.Database.Migrate();
         }
     }
 }

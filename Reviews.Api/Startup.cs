@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -34,18 +35,24 @@ namespace Reviews.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ReviewContext>();
+            services.AddDbContext<ReviewContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("ReviewDatabase"));
+            });
 
-            var configSection = Configuration.GetSection(nameof(Config));
-            var config = configSection.Get<Config>();
-            services.Configure<Config>(configSection);
+            var config = new IdentityConfiguration()
+            {
+                Authority = Configuration["oidc:authority"],
+                ApiName = Configuration["oidc:apiname"]
+            };
+            services.Configure<IdentityConfiguration>(Configuration.GetSection(IdentityConfiguration.Oidc));
 
             services.AddGrpcClient<ProductClient>(o =>
             {
-                o.Address = new Uri(config.ProductEndpoint);
+                o.Address = new Uri(Configuration["ProductEndpoint"]);
             });
 
-            services.AddAuthentication(config);
+            services.AddReviewAuthentication(config);
             services.AddAuthorization();
 
             services.AddScoped<IReviewRepository, ReviewRepository>();
@@ -55,7 +62,7 @@ namespace Reviews.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ReviewContext dataContext)
         {
             if (env.IsDevelopment())
             {
@@ -73,6 +80,9 @@ namespace Reviews.Api
             {
                 endpoints.MapControllers();
             });
+
+            // Migrate the DB
+            dataContext.Database.Migrate();
         }
     }
 }

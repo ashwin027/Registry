@@ -10,13 +10,13 @@ namespace Reviews.Shared.Extensions
 {
     public static class Authentication
     {
-        public static void AddAuthentication(this IServiceCollection services, Config config)
+        public static void AddReviewAuthentication(this IServiceCollection services, IdentityConfiguration config)
         {
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                     .AddIdentityServerAuthentication(options =>
                     {
-                        options.Authority = config.Identity.Authority;
-                        options.ApiName = config.Identity.ApiName;
+                        options.Authority = config.Authority;
+                        options.ApiName = config.ApiName;
                         options.RequireHttpsMetadata = true;
                     });
         }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ProductCatalog.Shared.Extensions;
 
 namespace ProductCatalog.Api
 {
@@ -26,6 +27,7 @@ namespace ProductCatalog.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.UseKestrel(options => options.ConfigureEndpoints());
                 });
     }
 }

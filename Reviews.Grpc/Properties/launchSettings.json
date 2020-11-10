@@ -1,12 +1,11 @@
-﻿{
+{
   "profiles": {
     "Reviews.Api": {
       "commandName": "Project",
-      "launchBrowser": false,
-      "applicationUrl": "http://localhost:6000;https://localhost:6001",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "applicationUrl": "http://localhost:6000;https://localhost:6001"
     }
   }
 }
